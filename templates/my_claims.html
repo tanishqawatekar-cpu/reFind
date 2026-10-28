@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}My Student Workspace — ReFind{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <span class="eyebrow">Personal Recovery Dossier</span>
+        <h1 class="section-title">My Student Workspace ({{ current_user.full_name }})</h1>
+        <p class="section-subtitle">
+            Student ID: <strong>{{ current_user.student_id }}</strong> &bull;
+            Department: <strong>{{ current_user.department }}</strong>
+        </p>
+    </div>
+    <div style="display:flex; gap:0.65rem;">
+        <a href="{{ url_for('report_lost_item') }}" class="btn btn-outline-lavender">+ Report Lost</a>
+        <a href="{{ url_for('report_found_item') }}" class="btn btn-primary">+ Report Found</a>
+    </div>
+</div>
+
+<!-- 1. My Ownership Claims -->
+<div class="card" data-reveal>
+    <div class="card-navy-header">
+        <div>
+            <h2>My Submitted Ownership Claims ({{ claims|length }})</h2>
+            <span style="font-size:0.78rem;">
+                Real-time verification status and administrator remarks
+            </span>
+        </div>
+    </div>
+
+    {% if claims %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Found Item</th>
+                        <th>Custody Location</th>
+                        <th>Your Proof Submitted</th>
+                        <th>Status</th>
+                        <th>Admin Review / Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in claims %}
+                        <tr>
+                            <td><strong>#{{ c.claim_id }}</strong></td>
+                            <td>
+                                <strong>{{ c.found_item_name }}</strong>
+                                <div style="font-size:0.76rem; color:var(--charcoal-muted);">
+                                    Found at {{ c.location_found }} ({{ c.date_found }})
+                                </div>
+                            </td>
+                            <td>{{ c.storage_location }}</td>
+                            <td style="max-width:260px;">{{ c.proof_description }}</td>
+                            <td>
+                                <span class="badge badge-{{ c.status|lower }}">{{ c.status }}</span>
+                            </td>
+                            <td>
+                                {% if c.admin_remarks %}
+                                    <div>{{ c.admin_remarks }}</div>
+                                    {% if c.reviewer_name %}
+                                        <span style="font-size:0.74rem; color:var(--lavender-deep);">
+                                            Reviewed by {{ c.reviewer_name }} ({{ c.reviewed_at }})
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span style="color:var(--charcoal-muted); font-size:0.8rem;">Awaiting Admin Verification</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p style="color:var(--charcoal-muted);">
+            You have not submitted any ownership claims yet. Browse the <a href="{{ url_for('found_items_gallery') }}" class="editorial-link">Found Gallery</a> or <a href="{{ url_for('matches_page') }}" class="editorial-link">Smart Matches</a> to claim a found belonging.
+        </p>
+    {% endif %}
+</div>
+
+<!-- 2. My Lost & Found Reports in Two Columns -->
+<div class="two-col-grid" data-reveal>
+    <!-- My Lost Reports -->
+    <div class="card">
+        <div class="card-navy-header">
+            <h2>My Lost Item Reports ({{ my_lost_items|length }})</h2>
+        </div>
+        {% if my_lost_items %}
+            <div class="timeline">
+                {% for item in my_lost_items %}
+                    <div class="timeline-item">
+                        <div>
+                            <span class="badge badge-{{ item.status|lower }}">{{ item.status }}</span>
+                            <strong style="margin-left:0.35rem; color:var(--ink-navy);">{{ item.item_name }}</strong>
+                            <div style="font-size:0.8rem; color:var(--charcoal-muted); margin-top:0.25rem;">
+                                {{ item.location_lost }} &bull; Lost on {{ item.date_lost }} &bull;
+                                <a href="{{ url_for('matches_page', category=item.category) }}" class="editorial-link">{{ item.match_count }} Match(es)</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color:var(--charcoal-muted);">No lost items reported by you.</p>
+        {% endif %}
+    </div>
+
+    <!-- My Found Reports -->
+    <div class="card">
+        <div class="card-navy-header">
+            <h2>My Found Item Reports ({{ my_found_items|length }})</h2>
+        </div>
+        {% if my_found_items %}
+            <div class="timeline">
+                {% for item in my_found_items %}
+                    <div class="timeline-item">
+                        <div>
+                            <span class="badge badge-{{ item.status|lower }}">{{ item.status }}</span>
+                            <strong style="margin-left:0.35rem; color:var(--ink-navy);">{{ item.item_name }}</strong>
+                            <div style="font-size:0.8rem; color:var(--charcoal-muted); margin-top:0.25rem;">
+                                {{ item.location_found }} &bull; Found on {{ item.date_found }} &bull;
+                                {{ item.pending_claims_count }} Pending Claim(s)
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color:var(--charcoal-muted);">No found items reported by you.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

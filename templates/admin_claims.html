@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Admin Claim Verification — ReFind{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <span class="eyebrow">Custody Governance &bull; ACID Transactional Review</span>
+        <h1 class="section-title">Administrator Ownership Claim Verification Panel</h1>
+        <p class="section-subtitle">
+            Compare private finder verification secrets, owner identifying marks, and claimant proof side-by-side. Approving a claim executes an <strong>ACID Transaction</strong> (<code>SELECT ... FOR UPDATE</code>) and enforces single-approval integrity.
+        </p>
+    </div>
+    <div style="display:flex; gap:0.5rem;">
+        <a href="{{ url_for('admin_claims_page') }}"
+           class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-outline-lavender{% endif %}">All</a>
+        <a href="{{ url_for('admin_claims_page', status='PENDING') }}"
+           class="btn btn-sm {% if status_filter == 'PENDING' %}btn-primary{% else %}btn-outline-lavender{% endif %}">Pending</a>
+        <a href="{{ url_for('admin_claims_page', status='APPROVED') }}"
+           class="btn btn-sm {% if status_filter == 'APPROVED' %}btn-primary{% else %}btn-outline-lavender{% endif %}">Approved</a>
+        <a href="{{ url_for('admin_claims_page', status='REJECTED') }}"
+           class="btn btn-sm {% if status_filter == 'REJECTED' %}btn-primary{% else %}btn-outline-lavender{% endif %}">Rejected</a>
+    </div>
+</div>
+
+{% if claims %}
+    {% for c in claims %}
+        <div class="card" data-reveal>
+            <div class="match-header">
+                <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+                    <span class="badge badge-{{ c.status|lower }}">CLAIM #{{ c.claim_id }} &bull; {{ c.status }}</span>
+                    <strong class="serif-display" style="font-size:1.35rem; color:var(--ink-navy);">
+                        Found Item #{{ c.found_id }}: {{ c.found_item_name }} ({{ c.found_category }})
+                    </strong>
+                    <span class="badge badge-{{ c.found_status|lower }}">Item Status: {{ c.found_status }}</span>
+                </div>
+                <span style="font-size:0.8rem; color:var(--charcoal-muted);">
+                    Submitted: {{ c.created_at }}
+                </span>
+            </div>
+
+            <div class="two-col-grid" style="margin-bottom:1.15rem;">
+                <!-- Claimant & Linked Report Info -->
+                <div style="background:var(--bg-ivory); padding:1.15rem; border-radius:8px; border:1px solid var(--border-hairline);">
+                    <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-navy); margin-bottom:0.55rem;">
+                        Claimant Student Details
+                    </div>
+                    <ul class="item-meta-list">
+                        <li><strong>Student Name:</strong> {{ c.claimant_name }}</li>
+                        <li><strong>Roll / ID Card Ref:</strong> {{ c.id_card_reference }} (Registered: {{ c.claimant_student_id }})</li>
+                        <li><strong>Department:</strong> {{ c.claimant_department }}</li>
+                        <li><strong>Email &amp; Phone:</strong> {{ c.claimant_email }} &bull; {{ c.claimant_phone }}</li>
+                        <li><strong>Found Location &amp; Date:</strong> {{ c.location_found }} ({{ c.date_found }})</li>
+                        <li><strong>Custody Desk:</strong> {{ c.storage_location }}</li>
+                        {% if c.lost_id %}
+                            <li><strong>Linked Lost Report:</strong> Lost #{{ c.lost_id }} ({{ c.lost_item_name }})</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Confidential Ownership Verification Comparison Box -->
+                <div class="privacy-box">
+                    <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-navy); margin-bottom:0.65rem;">
+                        Confidential Ownership Verification Comparison (Admin-Only View)
+                    </div>
+                    <div style="margin-bottom:0.6rem;">
+                        <strong style="color:var(--ink-navy); font-size:0.84rem;">1. Verification Question Asked:</strong>
+                        <div style="color:var(--charcoal-muted); font-size:0.86rem;">{{ c.verification_question }}</div>
+                    </div>
+                    <div style="margin-bottom:0.6rem;">
+                        <strong style="color:var(--emerald-ink); font-size:0.84rem;">2. Finder&rsquo;s Hidden Secret Detail (<code>found_items.secret_detail</code>):</strong>
+                        <div style="background:var(--white); padding:0.45rem 0.7rem; border-radius:6px; border:1px solid var(--border-hairline); font-size:0.86rem;">
+                            {{ c.finder_secret_detail or 'None recorded by finder' }}
+                        </div>
+                    </div>
+                    {% if c.owner_identifying_marks %}
+                        <div style="margin-bottom:0.6rem;">
+                            <strong style="color:var(--lavender-deep); font-size:0.84rem;">3. Linked Lost Report Identifying Marks (<code>lost_items.identifying_marks</code>):</strong>
+                            <div style="background:var(--white); padding:0.45rem 0.7rem; border-radius:6px; border:1px solid var(--border-hairline); font-size:0.86rem;">
+                                {{ c.owner_identifying_marks }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <strong style="color:var(--ink-navy); font-size:0.84rem;">4. Claimant&rsquo;s Submitted Proof (<code>claims.proof_description</code>):</strong>
+                        <div style="background:var(--white); padding:0.55rem 0.75rem; border-radius:6px; border:1.5px solid var(--lavender-muted); font-weight:600; font-size:0.88rem;">
+                            {{ c.proof_description }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if c.status == 'PENDING' %}
+                <!-- Transactional Approval / Rejection Form -->
+                <form action="{{ url_for('admin_review_claim', claim_id=c.claim_id) }}"
+                      method="POST"
+                      style="background:var(--bg-ivory); padding:1.1rem; border-radius:8px; border:1px solid var(--border-hairline); display:flex; align-items:end; gap:0.85rem; flex-wrap:wrap;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div style="flex:1; min-width:260px;">
+                        <label for="remarks_{{ c.claim_id }}" class="form-label">Administrator Verification Remarks</label>
+                        <input type="text"
+                               id="remarks_{{ c.claim_id }}"
+                               name="admin_remarks"
+                               class="form-control"
+                               placeholder="e.g., Verified engraving DEMO-TAG-01 and physical ID card CS2024018 at Admin Desk">
+                    </div>
+                    <button type="submit" name="decision" value="APPROVED" class="btn btn-success">
+                        &#x2714; Approve Claim &amp; Mark Returned (ACID Transaction)
+                    </button>
+                    <button type="submit" name="decision" value="REJECTED" class="btn btn-danger">
+                        &#x2716; Reject Claim
+                    </button>
+                </form>
+            {% else %}
+                <div style="font-size:0.84rem; color:var(--charcoal-muted); background:var(--bg-ivory); padding:0.8rem 1rem; border-radius:6px; border:1px solid var(--border-hairline);">
+                    <strong style="color:var(--ink-navy);">Reviewed Decision:</strong> {{ c.status }}
+                    {% if c.reviewer_name %}by {{ c.reviewer_name }} on {{ c.reviewed_at }}{% endif %} &bull;
+                    <strong style="color:var(--ink-navy);">Remarks:</strong> {{ c.admin_remarks or 'N/A' }}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem 2rem;">
+        <h3 class="serif-display" style="font-size:1.75rem;">No Ownership Claims Found for Selected Filter</h3>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" style="background:#FAF9F6; font-family:'Segoe UI', -apple-system, Roboto, sans-serif;">
+  <defs>
+    <marker id="p-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#4A387B"/>
+    </marker>
+    <style>
+      .slide-title { font-family: Georgia, 'Times New Roman', serif; font-size: 40px; fill: #20243A; }
+      .slide-sub { font-size: 19px; fill: #535562; }
+      .pillar { fill: #FFFFFF; stroke: #20243A; stroke-width: 2.2; rx: 16; filter: drop-shadow(0 12px 28px rgba(32,36,58,0.07)); }
+      .pillar-hdr { fill: #20243A; rx: 16; }
+      .pillar-step { font-size: 13px; font-weight: 700; fill: #D9CFF2; text-transform: uppercase; letter-spacing: 0.1em; }
+      .pillar-name { font-size: 23px; font-weight: 700; fill: #FFFFFF; }
+      .card-box { fill: #FAF9F6; stroke: #D9CFF2; stroke-width: 1.8; rx: 12; }
+      .card-box-green { fill: #ECF6F1; stroke: #1B5E43; stroke-width: 1.8; rx: 12; }
+      .card-head { font-size: 19px; font-weight: 700; fill: #20243A; }
+      .card-code { font-size: 17px; font-weight: 700; fill: #4A387B; font-family: Consolas, monospace; }
+      .card-line { font-size: 16.5px; fill: #535562; }
+      .conn-bi { fill: none; stroke: #4A387B; stroke-width: 3.5; marker-start: url(#p-arrow); marker-end: url(#p-arrow); }
+      .conn-pill { fill: #EEE9F8; stroke: #6E58A8; stroke-width: 1.5; rx: 8; }
+      .conn-txt { font-size: 14px; font-weight: 700; fill: #20243A; text-anchor: middle; }
+      .kpi-pill { fill: #FFFFFF; stroke: #20243A; stroke-width: 1.8; rx: 12; }
+    </style>
+  </defs>
+
+  <!-- Slide Header -->
+  <rect x="48" y="32" width="1824" height="106" rx="14" fill="#FFFFFF" stroke="#E7E4E9" stroke-width="1.8"/>
+  <text x="80" y="80" class="slide-title">ReFind — 4-Tier System Architecture</text>
+  <text x="80" y="115" class="slide-sub">Browser Client  ↔  Flask &amp; Jinja2 Controller  ↔  Modular Domain Services  ↔  MySQL 3NF Relational Database (refind_db :3307)</text>
+
+  <!-- =====================================================================
+       PILLAR 1: BROWSER CLIENT
+       ===================================================================== -->
+  <g transform="translate(48, 174)">
+    <rect x="0" y="0" width="380" height="690" class="pillar"/>
+    <rect x="0" y="0" width="380" height="82" class="pillar-hdr"/>
+    <text x="24" y="32" class="pillar-step">Tier 1 • Presentation</text>
+    <text x="24" y="62" class="pillar-name">Browser UI</text>
+
+    <g transform="translate(20, 108)">
+      <rect x="0" y="0" width="340" height="170" class="card-box"/>
+      <text x="18" y="34" class="card-head">Jinja2 HTML5 Views</text>
+      <text x="18" y="68" class="card-line">• Live KPI Dashboard &amp; Galleries</text>
+      <text x="18" y="98" class="card-line">• Lost &amp; Found Report Forms</text>
+      <text x="18" y="128" class="card-line">• 0–100 Match Cards &amp; Claims UI</text>
+    </g>
+
+    <g transform="translate(20, 302)">
+      <rect x="0" y="0" width="340" height="170" class="card-box"/>
+      <text x="18" y="34" class="card-head">Editorial Minimalism CSS</text>
+      <text x="18" y="68" class="card-line">• Ivory (#FAF9F6) &amp; Ink (#20243A)</text>
+      <text x="18" y="98" class="card-line">• Lavender Accent (#A895D6)</text>
+      <text x="18" y="128" class="card-line">• Responsive (1440px to 320px)</text>
+    </g>
+
+    <g transform="translate(20, 496)">
+      <rect x="0" y="0" width="340" height="165" class="card-box"/>
+      <text x="18" y="34" class="card-head">Vanilla JS (main.js)</text>
+      <text x="18" y="68" class="card-line">• Drag &amp; Drop Photo Preview</text>
+      <text x="18" y="98" class="card-line">• Form Validation &amp; Submit Lock</text>
+      <text x="18" y="128" class="card-line">• Demo Account Quick-Fill</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       PILLAR 2: FLASK APPLICATION CONTROLLER
+       ===================================================================== -->
+  <g transform="translate(528, 174)">
+    <rect x="0" y="0" width="390" height="690" class="pillar"/>
+    <rect x="0" y="0" width="390" height="82" class="pillar-hdr"/>
+    <text x="24" y="32" class="pillar-step">Tier 2 • Web &amp; API Layer</text>
+    <text x="24" y="62" class="pillar-name">Flask Controller (app.py)</text>
+
+    <g transform="translate(20, 108)">
+      <rect x="0" y="0" width="350" height="170" class="card-box"/>
+      <text x="18" y="34" class="card-head">SSR Page Routes</text>
+      <text x="18" y="68" class="card-line">• / , /lost-items , /found-items</text>
+      <text x="18" y="98" class="card-line">• /report/lost , /report/found</text>
+      <text x="18" y="128" class="card-line">• /matches , /my-claims , /admin/claims</text>
+    </g>
+
+    <g transform="translate(20, 302)">
+      <rect x="0" y="0" width="350" height="170" class="card-box"/>
+      <text x="18" y="34" class="card-head">REST JSON APIs (/api/*)</text>
+      <text x="18" y="68" class="card-line">• /api/lost-items , /api/found-items</text>
+      <text x="18" y="98" class="card-line">• /api/matches , /api/dashboard/stats</text>
+      <text x="18" y="128" class="card-line">• /api/claims , /api/claims/mine</text>
+    </g>
+
+    <g transform="translate(20, 496)">
+      <rect x="0" y="0" width="350" height="165" class="card-box-green"/>
+      <text x="18" y="34" class="card-head">Security &amp; RBAC Guards</text>
+      <text x="18" y="68" class="card-line">• Session Auth &amp; Role Checks</text>
+      <text x="18" y="98" class="card-line">• HMAC CSRF Verification</text>
+      <text x="18" y="128" class="card-line">• 100% Parameterized SQL (%s)</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       PILLAR 3: MODULAR DOMAIN SERVICES
+       ===================================================================== -->
+  <g transform="translate(1018, 174)">
+    <rect x="0" y="0" width="400" height="690" class="pillar"/>
+    <rect x="0" y="0" width="400" height="82" class="pillar-hdr"/>
+    <text x="24" y="32" class="pillar-step">Tier 3 • Business Logic</text>
+    <text x="24" y="62" class="pillar-name">Domain Services (services/)</text>
+
+    <g transform="translate(20, 108)">
+      <rect x="0" y="0" width="360" height="130" class="card-box"/>
+      <text x="18" y="32" class="card-code">security.py &amp; upload_service.py</text>
+      <text x="18" y="64" class="card-line">• Werkzeug scrypt Password Hashing</text>
+      <text x="18" y="94" class="card-line">• Image Magic-Byte Header Validation</text>
+    </g>
+
+    <g transform="translate(20, 260)">
+      <rect x="0" y="0" width="360" height="205" class="card-box"/>
+      <text x="18" y="32" class="card-code">matching_engine.py (0–100 Score)</text>
+      <text x="18" y="66" class="card-line">• Category Compatibility (30 pts)</text>
+      <text x="18" y="96" class="card-line">• Item Name &amp; Brand Overlap (25 pts)</text>
+      <text x="18" y="126" class="card-line">• Campus Zone Proximity (20 pts)</text>
+      <text x="18" y="156" class="card-line">• Date Delta (15) + Keywords (10)</text>
+    </g>
+
+    <g transform="translate(20, 486)">
+      <rect x="0" y="0" width="360" height="175" class="card-box-green"/>
+      <text x="18" y="32" class="card-code">claim_service.py (ACID Txn)</text>
+      <text x="18" y="66" class="card-line">• Pessimistic Lock: SELECT FOR UPDATE</text>
+      <text x="18" y="96" class="card-line">• Approves Claim &amp; Rejects Competing</text>
+      <text x="18" y="126" class="card-line">• Marks Found=RETURNED, Lost=RECOVERED</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       PILLAR 4: MYSQL 3NF DATABASE
+       ===================================================================== -->
+  <g transform="translate(1518, 174)">
+    <rect x="0" y="0" width="354" height="690" class="pillar"/>
+    <rect x="0" y="0" width="354" height="82" class="pillar-hdr"/>
+    <text x="24" y="32" class="pillar-step">Tier 4 • Persistence Layer</text>
+    <text x="24" y="62" class="pillar-name">MySQL 3NF (refind_db)</text>
+
+    <g transform="translate(20, 108)">
+      <rect x="0" y="0" width="314" height="130" class="card-box-green"/>
+      <text x="18" y="32" class="card-head">Least-Privilege Runtime</text>
+      <text x="18" y="64" class="card-line">• User: refind_app@127.0.0.1</text>
+      <text x="18" y="94" class="card-line">• SELECT, INSERT, UPDATE only</text>
+    </g>
+
+    <g transform="translate(20, 260)">
+      <rect x="0" y="0" width="314" height="185" class="card-box"/>
+      <text x="18" y="32" class="card-head">4 SQL Views (INVOKER)</text>
+      <text x="18" y="64" class="card-line">• vw_public_lost_gallery</text>
+      <text x="18" y="92" class="card-line">• vw_public_found_gallery</text>
+      <text x="18" y="120" class="card-line">• vw_detailed_matches (4 JOINs)</text>
+      <text x="18" y="148" class="card-line">• vw_dashboard_stats (11 KPIs)</text>
+    </g>
+
+    <g transform="translate(20, 466)">
+      <rect x="0" y="0" width="314" height="195" class="card-box"/>
+      <text x="18" y="32" class="card-head">6 Normalized 3NF Tables</text>
+      <text x="18" y="64" class="card-line">• users , lost_items , found_items</text>
+      <text x="18" y="92" class="card-line">• matches , claims , activity_logs</text>
+      <text x="18" y="124" class="card-line" style="fill:#1B5E43; font-weight:700;">• 6 PKs • 9 FKs • 5 UQs</text>
+      <text x="18" y="152" class="card-line" style="fill:#1B5E43; font-weight:700;">• 8 CHECKs • 18 Indexes</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       CONNECTOR ARROWS BETWEEN PILLARS
+       ===================================================================== -->
+  <!-- Pillar 1 <-> Pillar 2 -->
+  <path d="M 434 510 L 522 510" class="conn-bi"/>
+  <rect x="436" y="446" width="84" height="46" class="conn-pill"/>
+  <text x="478" y="466" class="conn-txt">HTTP</text>
+  <text x="478" y="484" class="conn-txt">+ CSRF</text>
+
+  <!-- Pillar 2 <-> Pillar 3 -->
+  <path d="M 924 510 L 1012 510" class="conn-bi"/>
+  <rect x="926" y="446" width="84" height="46" class="conn-pill"/>
+  <text x="968" y="466" class="conn-txt">Domain</text>
+  <text x="968" y="484" class="conn-txt">Calls</text>
+
+  <!-- Pillar 3 <-> Pillar 4 -->
+  <path d="M 1424 510 L 1512 510" class="conn-bi"/>
+  <rect x="1426" y="446" width="84" height="46" class="conn-pill"/>
+  <text x="1468" y="466" class="conn-txt">SQL &amp;</text>
+  <text x="1468" y="484" class="conn-txt">ACID Txn</text>
+
+  <!-- =====================================================================
+       BOTTOM ARCHITECTURAL HIGHLIGHTS STRIP
+       ===================================================================== -->
+  <g transform="translate(48, 900)">
+    <rect x="0" y="0" width="588" height="136" class="kpi-pill"/>
+    <text x="24" y="40" style="font-size:20px; font-weight:700; fill:#20243A;">1. Privacy-Preserving SQL Views</text>
+    <text x="24" y="74" style="font-size:16px; fill:#535562;">Public galleries query vw_public_lost_gallery &amp; vw_public_found_gallery,</text>
+    <text x="24" y="102" style="font-size:16px; fill:#535562;">hiding private identifying_marks &amp; secret_detail from public view.</text>
+
+    <rect x="618" y="0" width="588" height="136" class="kpi-pill"/>
+    <text x="642" y="40" style="font-size:20px; font-weight:700; fill:#20243A;">2. Explainable 5-Factor Matching (0–100)</text>
+    <text x="642" y="74" style="font-size:16px; fill:#535562;">Category (30) + Name/Brand (25) + Campus Zone (20) + Date (15) + Desc (10).</text>
+    <text x="642" y="102" style="font-size:16px; fill:#535562;">Idempotent upsert via UNIQUE(lost_id, found_id) constraint.</text>
+
+    <rect x="1236" y="0" width="588" height="136" class="kpi-pill"/>
+    <text x="1260" y="40" style="font-size:20px; font-weight:700; fill:#1B5E43;">3. Double-Protected Claim Approval</text>
+    <text x="1260" y="74" style="font-size:16px; fill:#535562;">Pessimistic SELECT ... FOR UPDATE transaction + InnoDB Stored Generated</text>
+    <text x="1260" y="102" style="font-size:16px; fill:#535562;">UNIQUE column (approved_found_id) guarantees single-winner integrity.</text>
+  </g>
+</svg>

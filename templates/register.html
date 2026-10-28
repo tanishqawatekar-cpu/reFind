@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Student Registration — ReFind{% endblock %}
+
+{% block content %}
+<div class="editorial-split-layout" style="max-width:1080px; margin:1rem auto;">
+    <aside class="editorial-aside">
+        <span class="eyebrow">Campus Identity Enrollment</span>
+        <h1 class="editorial-aside-title">
+            Student Account Registration
+        </h1>
+        <p class="editorial-aside-copy">
+            Create your verified student profile to report missing belongings, log items you have discovered on campus, and submit confidential ownership claims.
+        </p>
+
+        <ul class="editorial-checklist">
+            <li>Student Roll / PRN IDs and campus emails are enforced with <code>UNIQUE</code> constraints in <code>refind_db.users</code>.</li>
+            <li>Passwords are salted and hashed using Werkzeug <code>scrypt</code> before storage.</li>
+        </ul>
+    </aside>
+
+    <div class="card" style="margin-bottom:0;">
+        <div class="card-navy-header">
+            <div>
+                <h2>Enroll Student Profile</h2>
+                <span style="font-size:0.8rem;">
+                    All fields are validated before database insertion
+                </span>
+            </div>
+        </div>
+
+        <form action="{{ url_for('register_page') }}" method="POST" data-loading-text="Creating account...">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="student_id" class="form-label">Student Roll / PRN ID *</label>
+                    <span id="student-id-hint" class="form-hint" style="margin-top:0; margin-bottom:0.25rem;">3–30 alphanumeric characters (`UNIQUE` in `users`).</span>
+                    <input type="text"
+                           id="student_id"
+                           name="student_id"
+                           class="form-control"
+                           placeholder="e.g., CS2024099"
+                           value="{{ form_data.student_id if form_data else '' }}"
+                           pattern="[A-Za-z0-9\-_]{3,30}"
+                           aria-describedby="student-id-hint"
+                           autocapitalize="characters"
+                           autocorrect="off"
+                           spellcheck="false"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="full_name" class="form-label">Full Name *</label>
+                    <input type="text"
+                           id="full_name"
+                           name="full_name"
+                           class="form-control"
+                           placeholder="e.g., Jamie Brooks"
+                           value="{{ form_data.full_name if form_data else '' }}"
+                           autocomplete="name"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Campus Email Address *</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           class="form-control"
+                           placeholder="e.g., jamie.brooks@campus.edu"
+                           value="{{ form_data.email if form_data else '' }}"
+                           autocomplete="username"
+                           autocapitalize="none"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" class="form-label">Mobile Number *</label>
+                    <input type="tel"
+                           id="phone"
+                           name="phone"
+                           class="form-control"
+                           placeholder="e.g., 555-0199"
+                           value="{{ form_data.phone if form_data else '' }}"
+                           inputmode="tel"
+                           autocomplete="tel"
+                           required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="department" class="form-label">Academic Department *</label>
+                    <select id="department" name="department" class="form-control" required>
+                        <option value="">-- Select Department --</option>
+                        {% for dept in [
+                            'Computer Engineering',
+                            'Information Technology',
+                            'Electronics & Telecom',
+                            'Artificial Intelligence & Data Science',
+                            'Mechanical Engineering',
+                            'Civil Engineering',
+                            'Instrumentation Engineering'
+                        ] %}
+                            <option value="{{ dept }}" {% if form_data and form_data.department == dept %}selected{% endif %}>
+                                {{ dept }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password *</label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Minimum 6 characters"
+                           minlength="6"
+                           autocomplete="new-password"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Confirm Password *</label>
+                    <input type="password"
+                           id="confirm_password"
+                           name="confirm_password"
+                           class="form-control"
+                           placeholder="Re-enter password"
+                           minlength="6"
+                           autocomplete="new-password"
+                           required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">
+                Create Student Account
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.35rem; font-size:0.86rem; color:var(--charcoal-muted);">
+            Already registered?
+            <a href="{{ url_for('login_page') }}" class="editorial-link" style="margin-left:0.25rem;">Sign In</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

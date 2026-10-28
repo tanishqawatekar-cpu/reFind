@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ReFind — Smart Campus Lost &amp; Found System. An editorial, human-centered campus recovery platform backed by MySQL 8+ and Python Flask.">
+    <title>{% block title %}ReFind — Smart Campus Lost &amp; Found{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Minimal Sticky Editorial Header -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('dashboard_page') }}" class="brand-logo" aria-label="ReFind — Smart Campus Lost &amp; Found Home">
+                <span class="brand-wordmark">refind<span class="dot">.</span></span>
+                <span class="brand-subtitle">Smart Campus Lost &amp; Found</span>
+            </a>
+
+            <nav aria-label="Main Navigation">
+                <ul class="nav-links">
+                    <li>
+                        <a href="{{ url_for('lost_items_gallery') }}"
+                           class="nav-link {% if request.endpoint == 'lost_items_gallery' %}active{% endif %}">
+                            Browse Lost
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('found_items_gallery') }}"
+                           class="nav-link {% if request.endpoint == 'found_items_gallery' %}active{% endif %}">
+                            Browse Found
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('dashboard_page') }}#how-it-works"
+                           class="nav-link">
+                            How It Works
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('matches_page') }}"
+                           class="nav-link {% if request.endpoint == 'matches_page' %}active{% endif %}">
+                            Smart Matches
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('activity_page') }}"
+                           class="nav-link {% if request.endpoint == 'activity_page' %}active{% endif %}">
+                            Activity
+                        </a>
+                    </li>
+                    {% if current_user %}
+                        <li>
+                            <a href="{{ url_for('my_claims_page') }}"
+                               class="nav-link {% if request.endpoint == 'my_claims_page' %}active{% endif %}">
+                                Dashboard
+                            </a>
+                        </li>
+                        {% if current_user.role == 'ADMIN' %}
+                            <li>
+                                <a href="{{ url_for('admin_claims_page') }}"
+                                   class="nav-link {% if request.endpoint == 'admin_claims_page' %}active{% endif %}">
+                                    Admin Verify
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                {% if current_user %}
+                    <a href="{{ url_for('report_lost_item') }}" class="btn btn-sm btn-outline-lavender">+ Lost</a>
+                    <a href="{{ url_for('report_found_item') }}" class="btn btn-sm btn-lavender-soft">+ Found</a>
+                    <div class="user-pill">
+                        <span>{{ current_user.full_name }}</span>
+                        <span class="role-chip {% if current_user.role == 'ADMIN' %}admin{% endif %}">
+                            {{ current_user.role }}
+                        </span>
+                    </div>
+                    <form action="{{ url_for('logout_action') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-sm btn-outline-lavender">Sign Out</button>
+                    </form>
+                {% else %}
+                    <a href="{{ url_for('login_page') }}" class="btn btn-sm btn-outline-lavender">Login</a>
+                    <a href="{{ url_for('register_page') }}" class="btn btn-sm btn-primary">Student Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack" role="status" aria-live="polite">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Minimal Editorial Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="{{ url_for('dashboard_page') }}" class="brand-logo">
+                    <span class="brand-wordmark">refind<span class="dot">.</span></span>
+                </a>
+                <p class="footer-tagline">
+                    Because every little thing deserves its way back home. A thoughtful campus lost-and-found recovery registry.
+                </p>
+            </div>
+
+            <div class="footer-nav" aria-label="Footer Navigation">
+                <a href="{{ url_for('lost_items_gallery') }}">Browse Lost</a>
+                <a href="{{ url_for('found_items_gallery') }}">Browse Found</a>
+                <a href="{{ url_for('matches_page') }}">Smart Matches</a>
+                <a href="{{ url_for('activity_page') }}">Audit Trail</a>
+                {% if current_user %}
+                    <a href="{{ url_for('my_claims_page') }}">My Workspace</a>
+                {% else %}
+                    <a href="{{ url_for('login_page') }}">Campus Sign In</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span><strong>ReFind — Smart Campus Lost &amp; Found System</strong> &bull; College DBMS Course Project</span>
+            <span>Python Flask &bull; MySQL 8+ Normalized Relational Schema (<code>refind_db</code>)</span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

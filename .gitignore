@@ -1,0 +1,38 @@
+# Environment variables & secrets (NEVER commit)
+.env
+.env.local
+.env.*.local
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Python bytecode, test & linter caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE & OS metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+~$*
+*.tmp
+*.bak
+*.log
+
+# Local UI backup snapshots & private presentation decks
+.backup_*/
+docs/*.pptx
+docs/DEMO_RUNBOOK.md
+
+# User-uploaded runtime images (keep only seeded sample_*.png illustrations)
+static/uploads/*
+!static/uploads/sample_*.png

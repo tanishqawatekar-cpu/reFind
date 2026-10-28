@@ -1,0 +1,317 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" style="background:#FAF9F6; font-family:'Segoe UI', -apple-system, Roboto, sans-serif;">
+  <defs>
+    <style>
+      .s-title { font-family: Georgia, 'Times New Roman', serif; font-size: 38px; fill: #20243A; }
+      .s-sub { font-size: 17.5px; fill: #535562; }
+      .ent-box { fill: #FFFFFF; stroke: #20243A; stroke-width: 2.4; rx: 14; filter: drop-shadow(0 10px 24px rgba(32,36,58,0.07)); }
+      .ent-hdr { fill: #20243A; rx: 14; }
+      .ent-name { font-size: 23px; font-weight: 700; fill: #FFFFFF; font-family: Consolas, monospace; }
+      .ent-tag { font-size: 13px; font-weight: 700; fill: #D9CFF2; }
+      .row-txt { font-size: 15.5px; fill: #20243A; font-family: Consolas, monospace; }
+      .row-note { font-size: 14px; fill: #535562; text-anchor: end; }
+      .b-pk { fill: #FEF3C7; stroke: #D97706; stroke-width: 1.2; rx: 5; }
+      .t-pk { font-size: 12px; font-weight: 700; fill: #92400E; text-anchor: middle; }
+      .b-fk { fill: #EEE9F8; stroke: #6E58A8; stroke-width: 1.2; rx: 5; }
+      .t-fk { font-size: 12px; font-weight: 700; fill: #4A387B; text-anchor: middle; }
+      .b-uq { fill: #ECF6F1; stroke: #1B5E43; stroke-width: 1.2; rx: 5; }
+      .t-uq { font-size: 12px; font-weight: 700; fill: #1B5E43; text-anchor: middle; }
+      .b-pr { fill: #FCEFF2; stroke: #8E283A; stroke-width: 1.2; rx: 5; }
+      .t-pr { font-size: 11.5px; font-weight: 700; fill: #8E283A; text-anchor: middle; }
+      .rel-solid { fill: none; stroke: #4A387B; stroke-width: 3; }
+      .rel-dash { fill: none; stroke: #6E58A8; stroke-width: 2.6; stroke-dasharray: 8 5; }
+      .rel-pill { fill: #FAF9F6; stroke: #A895D6; stroke-width: 1.5; rx: 6; }
+      .rel-txt { font-size: 13.5px; font-weight: 700; fill: #20243A; text-anchor: middle; }
+      .card-lbl { font-size: 14.5px; font-weight: 800; fill: #4A387B; }
+    </style>
+  </defs>
+
+  <!-- Header -->
+  <rect x="44" y="26" width="1832" height="96" rx="14" fill="#FFFFFF" stroke="#E7E4E9" stroke-width="1.8"/>
+  <text x="76" y="70" class="s-title">ReFind (refind_db) — 3NF Entity-Relationship Overview</text>
+  <text x="76" y="102" class="s-sub">6 Normalized Tables • 6 Primary Keys • 9 Foreign Keys (6 Mandatory 1:0..*, 3 Nullable 0..1:0..*) • 5 Unique Constraints • 8 Check Constraints • 18 Indexes</text>
+
+  <!-- Legend -->
+  <g transform="translate(1310, 44)">
+    <rect x="0" y="0" width="38" height="24" class="b-pk"/><text x="19" y="16" class="t-pk">PK</text>
+    <text x="46" y="17" style="font-size:15px; font-weight:700; fill:#20243A;">Primary Key</text>
+    <rect x="148" y="0" width="38" height="24" class="b-fk"/><text x="167" y="16" class="t-fk">FK</text>
+    <text x="194" y="17" style="font-size:15px; font-weight:700; fill:#20243A;">Foreign Key</text>
+    <rect x="296" y="0" width="38" height="24" class="b-uq"/><text x="315" y="16" class="t-uq">UQ</text>
+    <text x="342" y="17" style="font-size:15px; font-weight:700; fill:#20243A;">Unique (5)</text>
+    <rect x="435" y="0" width="48" height="24" class="b-pr"/><text x="459" y="16" class="t-pr">PRIV</text>
+    <text x="491" y="17" style="font-size:15px; font-weight:700; fill:#20243A;">Private</text>
+  </g>
+
+  <!-- =====================================================================
+       9 RELATIONSHIP LINES (SPACED WITH CLEAR PILLS)
+       ===================================================================== -->
+  <!-- 1. users (1) -> lost_items (0..*) -->
+  <path d="M 524 260 L 730 260" class="rel-solid"/>
+  <text x="536" y="250" class="card-lbl">1</text>
+  <text x="698" y="250" class="card-lbl">0..*</text>
+  <rect x="566" y="242" width="122" height="26" class="rel-pill"/>
+  <text x="627" y="260" class="rel-txt">reports lost</text>
+
+  <!-- 2. users (1) -> found_items (0..*) -->
+  <path d="M 380 450 L 380 512 L 970 512 L 970 570" class="rel-solid"/>
+  <text x="392" y="472" class="card-lbl">1</text>
+  <text x="982" y="558" class="card-lbl">0..*</text>
+  <rect x="740" y="498" width="142" height="26" class="rel-pill"/>
+  <text x="811" y="516" class="rel-txt">reports found</text>
+
+  <!-- 3. lost_items (1) -> matches (0..*) -->
+  <path d="M 1210 260 L 1400 260" class="rel-solid"/>
+  <text x="1222" y="250" class="card-lbl">1</text>
+  <text x="1368" y="250" class="card-lbl">0..*</text>
+  <rect x="1248" y="242" width="112" height="26" class="rel-pill"/>
+  <text x="1304" y="260" class="rel-txt">lost match</text>
+
+  <!-- 4. found_items (1) -> matches (0..*) -->
+  <path d="M 1210 645 L 1295 645 L 1295 360 L 1400 360" class="rel-solid"/>
+  <text x="1222" y="635" class="card-lbl">1</text>
+  <text x="1368" y="350" class="card-lbl">0..*</text>
+  <rect x="1235" y="475" width="120" height="26" class="rel-pill"/>
+  <text x="1295" y="493" class="rel-txt">found match</text>
+
+  <!-- 5. found_items (1) -> claims (0..*) -->
+  <path d="M 1210 740 L 1400 740" class="rel-solid"/>
+  <text x="1222" y="730" class="card-lbl">1</text>
+  <text x="1368" y="730" class="card-lbl">0..*</text>
+  <rect x="1246" y="722" width="116" height="26" class="rel-pill"/>
+  <text x="1304" y="740" class="rel-txt">claimed via</text>
+
+  <!-- 6. lost_items (0..1) -> claims (0..*) -->
+  <path d="M 1210 390 L 1345 390 L 1345 640 L 1400 640" class="rel-dash"/>
+  <text x="1220" y="380" class="card-lbl">0..1</text>
+  <text x="1368" y="630" class="card-lbl">0..*</text>
+  <rect x="1278" y="555" width="118" height="26" class="rel-pill"/>
+  <text x="1337" y="573" class="rel-txt">optional link</text>
+
+  <!-- 7. users (1) -> claims.claimant_id (0..*) -->
+  <path d="M 524 360 L 635 360 L 635 900 L 1400 900" class="rel-solid"/>
+  <text x="536" y="350" class="card-lbl">1</text>
+  <text x="1368" y="890" class="card-lbl">0..*</text>
+  <rect x="890" y="886" width="210" height="26" class="rel-pill"/>
+  <text x="995" y="904" class="rel-txt">claimant_id (RESTRICT)</text>
+
+  <!-- 8. users (0..1) -> claims.reviewed_by (0..*) -->
+  <path d="M 524 410 L 595 410 L 595 942 L 1400 942" class="rel-dash"/>
+  <text x="536" y="400" class="card-lbl">0..1</text>
+  <text x="1368" y="934" class="card-lbl">0..*</text>
+  <rect x="890" y="928" width="210" height="26" class="rel-pill"/>
+  <text x="995" y="946" class="rel-txt">reviewed_by (SET NULL)</text>
+
+  <!-- 9. users (0..1) -> activity_logs (0..*) -->
+  <path d="M 220 450 L 220 570" class="rel-dash"/>
+  <text x="234" y="474" class="card-lbl">0..1</text>
+  <text x="234" y="558" class="card-lbl">0..*</text>
+  <rect x="125" y="498" width="190" height="26" class="rel-pill"/>
+  <text x="220" y="516" class="rel-txt">audit actor (SET NULL)</text>
+
+
+  <!-- =====================================================================
+       TABLE 1: users
+       ===================================================================== -->
+  <g transform="translate(44, 152)">
+    <rect x="0" y="0" width="480" height="298" class="ent-box"/>
+    <rect x="0" y="0" width="480" height="62" class="ent-hdr"/>
+    <text x="22" y="39" class="ent-name">1. users</text>
+    <text x="458" y="38" text-anchor="end" class="ent-tag">3NF • 5 Seed Rows</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="-17" width="36" height="22" class="b-pk"/><text x="18" y="-1" class="t-pk">PK</text>
+      <text x="46" y="0" class="row-txt" font-weight="700">user_id</text>
+      <text x="440" y="0" class="row-note">INT AUTO_INCREMENT</text>
+
+      <rect x="0" y="21" width="36" height="22" class="b-uq"/><text x="18" y="37" class="t-uq">UQ</text>
+      <text x="46" y="38" class="row-txt">student_id</text>
+      <text x="440" y="38" class="row-note">uq_users_student_id</text>
+
+      <rect x="0" y="59" width="36" height="22" class="b-uq"/><text x="18" y="75" class="t-uq">UQ</text>
+      <text x="46" y="76" class="row-txt">email</text>
+      <text x="440" y="76" class="row-note">uq_users_email</text>
+
+      <text x="46" y="114" class="row-txt">full_name, phone, dept</text>
+      <text x="440" y="114" class="row-note">NOT NULL + CHECKs</text>
+
+      <text x="46" y="152" class="row-txt">password_hash, role</text>
+      <text x="440" y="152" class="row-note">scrypt • STUDENT/ADMIN</text>
+
+      <text x="46" y="188" class="row-txt">is_active, created_at</text>
+      <text x="440" y="188" class="row-note">BOOLEAN • TIMESTAMP</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TABLE 2: lost_items
+       ===================================================================== -->
+  <g transform="translate(730, 152)">
+    <rect x="0" y="0" width="480" height="298" class="ent-box"/>
+    <rect x="0" y="0" width="480" height="62" class="ent-hdr"/>
+    <text x="22" y="39" class="ent-name">2. lost_items</text>
+    <text x="458" y="38" text-anchor="end" class="ent-tag">vw_public_lost_gallery</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="-17" width="36" height="22" class="b-pk"/><text x="18" y="-1" class="t-pk">PK</text>
+      <text x="46" y="0" class="row-txt" font-weight="700">lost_id</text>
+      <text x="440" y="0" class="row-note">INT AUTO_INCREMENT</text>
+
+      <rect x="0" y="21" width="36" height="22" class="b-fk"/><text x="18" y="37" class="t-fk">FK</text>
+      <text x="46" y="38" class="row-txt">user_id</text>
+      <text x="440" y="38" class="row-note">NOT NULL -&gt; users</text>
+
+      <text x="46" y="76" class="row-txt">item_name, category</text>
+      <text x="440" y="76" class="row-note">8 Campus Categories</text>
+
+      <text x="46" y="114" class="row-txt">location_lost, date_lost</text>
+      <text x="440" y="114" class="row-note">Indexed for Matcher</text>
+
+      <rect x="0" y="135" width="44" height="22" class="b-pr"/><text x="22" y="151" class="t-pr">PRIV</text>
+      <text x="52" y="152" class="row-txt" fill="#8E283A">identifying_marks</text>
+      <text x="440" y="152" class="row-note">Hidden in Public View</text>
+
+      <text x="46" y="188" class="row-txt">status, image_path</text>
+      <text x="440" y="188" class="row-note">OPEN/MATCHED/RECOVERED</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TABLE 4: matches
+       ===================================================================== -->
+  <g transform="translate(1400, 152)">
+    <rect x="0" y="0" width="476" height="298" class="ent-box"/>
+    <rect x="0" y="0" width="476" height="62" class="ent-hdr"/>
+    <text x="22" y="39" class="ent-name">4. matches</text>
+    <text x="454" y="38" text-anchor="end" class="ent-tag">vw_detailed_matches</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="-17" width="36" height="22" class="b-pk"/><text x="18" y="-1" class="t-pk">PK</text>
+      <text x="46" y="0" class="row-txt" font-weight="700">match_id</text>
+      <text x="436" y="0" class="row-note">INT AUTO_INCREMENT</text>
+
+      <rect x="0" y="21" width="36" height="22" class="b-fk"/><text x="18" y="37" class="t-fk">FK</text>
+      <rect x="40" y="21" width="36" height="22" class="b-uq"/><text x="58" y="37" class="t-uq">UQ</text>
+      <text x="84" y="38" class="row-txt">lost_id, found_id</text>
+      <text x="436" y="38" class="row-note">uq_matches_pair</text>
+
+      <text x="46" y="76" class="row-txt" font-weight="700">match_score (0..100)</text>
+      <text x="436" y="76" class="row-note">INDEX DESC + CHECK</text>
+
+      <text x="46" y="114" class="row-txt">category/name/loc_pts</text>
+      <text x="436" y="114" class="row-note">30 + 25 + 20 pts</text>
+
+      <text x="46" y="152" class="row-txt">date/description_pts</text>
+      <text x="436" y="152" class="row-note">15 + 10 pts</text>
+
+      <text x="46" y="188" class="row-txt">match_status</text>
+      <text x="436" y="188" class="row-note">SUGGESTED / CONFIRMED</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TABLE 6: activity_logs
+       ===================================================================== -->
+  <g transform="translate(44, 570)">
+    <rect x="0" y="0" width="480" height="298" class="ent-box"/>
+    <rect x="0" y="0" width="480" height="62" class="ent-hdr"/>
+    <text x="22" y="39" class="ent-name">6. activity_logs</text>
+    <text x="458" y="38" text-anchor="end" class="ent-tag">Append-Only Audit Trail</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="-17" width="36" height="22" class="b-pk"/><text x="18" y="-1" class="t-pk">PK</text>
+      <text x="46" y="0" class="row-txt" font-weight="700">log_id</text>
+      <text x="440" y="0" class="row-note">BIGINT AUTO_INCREMENT</text>
+
+      <rect x="0" y="21" width="36" height="22" class="b-fk"/><text x="18" y="37" class="t-fk">FK</text>
+      <text x="46" y="38" class="row-txt">user_id (NULLABLE)</text>
+      <text x="440" y="38" class="row-note">ON DELETE SET NULL</text>
+
+      <text x="46" y="82" class="row-txt">action_type</text>
+      <text x="440" y="82" class="row-note">9 Lifecycle Event Types</text>
+
+      <text x="46" y="126" class="row-txt">entity_type, entity_id</text>
+      <text x="440" y="126" class="row-note">Target Record Link</text>
+
+      <text x="46" y="170" class="row-txt">summary, created_at</text>
+      <text x="440" y="170" class="row-note">INDEX (created_at DESC)</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TABLE 3: found_items
+       ===================================================================== -->
+  <g transform="translate(730, 570)">
+    <rect x="0" y="0" width="480" height="298" class="ent-box"/>
+    <rect x="0" y="0" width="480" height="62" class="ent-hdr"/>
+    <text x="22" y="39" class="ent-name">3. found_items</text>
+    <text x="458" y="38" text-anchor="end" class="ent-tag">vw_public_found_gallery</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="-17" width="36" height="22" class="b-pk"/><text x="18" y="-1" class="t-pk">PK</text>
+      <text x="46" y="0" class="row-txt" font-weight="700">found_id</text>
+      <text x="440" y="0" class="row-note">INT AUTO_INCREMENT</text>
+
+      <rect x="0" y="21" width="36" height="22" class="b-fk"/><text x="18" y="37" class="t-fk">FK</text>
+      <text x="46" y="38" class="row-txt">user_id</text>
+      <text x="440" y="38" class="row-note">NOT NULL -&gt; users</text>
+
+      <text x="46" y="76" class="row-txt">item_name, category</text>
+      <text x="440" y="76" class="row-note">location_found, date_found</text>
+
+      <text x="46" y="114" class="row-txt">storage_location</text>
+      <text x="440" y="114" class="row-note">verification_question</text>
+
+      <rect x="0" y="135" width="44" height="22" class="b-pr"/><text x="22" y="151" class="t-pr">PRIV</text>
+      <text x="52" y="152" class="row-txt" fill="#8E283A">secret_detail</text>
+      <text x="440" y="152" class="row-note">Hidden in Public View</text>
+
+      <text x="46" y="188" class="row-txt">status, image_path</text>
+      <text x="440" y="188" class="row-note">AVAILABLE / RETURNED</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TABLE 5: claims
+       ===================================================================== -->
+  <g transform="translate(1400, 570)">
+    <rect x="0" y="0" width="476" height="400" class="ent-box"/>
+    <rect x="0" y="0" width="476" height="62" class="ent-hdr"/>
+    <text x="22" y="39" class="ent-name">5. claims</text>
+    <text x="454" y="38" text-anchor="end" class="ent-tag">ACID + 2 Unique Constraints</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="-17" width="36" height="22" class="b-pk"/><text x="18" y="-1" class="t-pk">PK</text>
+      <text x="46" y="0" class="row-txt" font-weight="700">claim_id</text>
+      <text x="436" y="0" class="row-note">INT AUTO_INCREMENT</text>
+
+      <rect x="0" y="21" width="36" height="22" class="b-fk"/><text x="18" y="37" class="t-fk">FK</text>
+      <rect x="40" y="21" width="36" height="22" class="b-uq"/><text x="58" y="37" class="t-uq">UQ</text>
+      <text x="84" y="38" class="row-txt">found_id, claimant_id</text>
+      <text x="436" y="38" class="row-note">uq_claims_user_found</text>
+
+      <rect x="0" y="59" width="36" height="22" class="b-fk"/><text x="18" y="75" class="t-fk">FK</text>
+      <text x="46" y="76" class="row-txt">lost_id (NULLABLE)</text>
+      <text x="436" y="76" class="row-note">ON DELETE SET NULL</text>
+
+      <rect x="0" y="97" width="44" height="22" class="b-pr"/><text x="22" y="113" class="t-pr">PRIV</text>
+      <text x="52" y="114" class="row-txt" fill="#8E283A">proof_description</text>
+      <text x="436" y="114" class="row-note">Confidential + ID Ref</text>
+
+      <text x="46" y="152" class="row-txt">status</text>
+      <text x="436" y="152" class="row-note">PENDING/APPROVED/REJECTED</text>
+
+      <rect x="0" y="173" width="36" height="22" class="b-uq"/><text x="18" y="189" class="t-uq">UQ</text>
+      <text x="46" y="190" class="row-txt" font-weight="700" fill="#1B5E43">approved_found_id</text>
+      <text x="436" y="190" class="row-note">GENERATED STORED UQ</text>
+
+      <rect x="0" y="211" width="36" height="22" class="b-fk"/><text x="18" y="227" class="t-fk">FK</text>
+      <text x="46" y="228" class="row-txt">reviewed_by (NULLABLE)</text>
+      <text x="436" y="228" class="row-note">Admin FK + reviewed_at</text>
+    </g>
+  </g>
+
+  <!-- Bottom Note Bar -->
+  <rect x="44" y="986" width="1832" height="66" rx="12" fill="#FFFFFF" stroke="#20243A" stroke-width="1.8"/>
+  <text x="72" y="1026" style="font-size:17px; fill:#20243A; font-weight:700;">4 SQL Views (SQL SECURITY INVOKER):</text>
+  <text x="405" y="1026" style="font-size:16.5px; fill:#535562;">1. vw_public_lost_gallery  •  2. vw_public_found_gallery  •  3. vw_detailed_matches (4 INNER JOINs, users ×2)  •  4. vw_dashboard_stats (11 KPIs)</text>
+</svg>

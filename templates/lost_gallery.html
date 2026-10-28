@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Lost Items Gallery — ReFind{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <span class="eyebrow">Campus Registry &bull; SQL View `vw_public_lost_gallery`</span>
+        <h1 class="section-title">Lost Items Gallery</h1>
+        <p class="section-subtitle">
+            Browse belongings reported missing across campus. Private owner verification marks (<code>identifying_marks</code>) remain concealed at the database view layer.
+        </p>
+    </div>
+    {% if current_user %}
+        <a href="{{ url_for('report_lost_item') }}" class="btn btn-primary">+ Report a Lost Item</a>
+    {% else %}
+        <a href="{{ url_for('login_page') }}" class="btn btn-outline-lavender">Sign In to Report Lost</a>
+    {% endif %}
+</div>
+
+<!-- Minimal Editorial Search & Filter Bar -->
+<form action="{{ url_for('lost_items_gallery') }}" method="GET" class="filter-bar" aria-label="Filter Lost Items">
+    <div class="filter-grid">
+        <div>
+            <label for="q" class="form-label">Keyword Search</label>
+            <input type="search"
+                   id="q"
+                   name="q"
+                   class="form-control"
+                   placeholder="Search item name, brand, color, description..."
+                   value="{{ filters.q }}">
+        </div>
+
+        <div>
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-control">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if filters.category == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-control">
+                <option value="">All Statuses</option>
+                {% for st in ['OPEN', 'MATCHED', 'RECOVERED', 'CLOSED'] %}
+                    <option value="{{ st }}" {% if filters.status == st %}selected{% endif %}>{{ st }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="location" class="form-label">Campus Location</label>
+            <input type="text"
+                   id="location"
+                   name="location"
+                   class="form-control"
+                   placeholder="e.g., Library, Lab, Canteen"
+                   value="{{ filters.location }}">
+        </div>
+
+        <div style="display:flex; gap:0.5rem;">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{{ url_for('lost_items_gallery') }}" class="btn btn-outline-lavender">Reset</a>
+        </div>
+    </div>
+</form>
+
+<!-- Editorial Catalog Cards Grid -->
+{% if items %}
+    <div class="gallery-grid" data-reveal>
+        {% for item in items %}
+            <article class="item-card">
+                <div class="item-image-wrap">
+                    {% if item.image_path %}
+                        <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.item_name }}" loading="lazy">
+                    {% else %}
+                        <div class="item-placeholder">No Photograph Provided</div>
+                    {% endif %}
+                    <div class="item-top-badges">
+                        <span class="badge badge-category">{{ item.category }}</span>
+                        <span class="badge badge-{{ item.status|lower }}">{{ item.status }}</span>
+                    </div>
+                </div>
+
+                <div class="item-body">
+                    <h2 class="item-title">{{ item.item_name }}</h2>
+                    <ul class="item-meta-list">
+                        {% if item.brand_color %}
+                            <li><strong>Brand / Color:</strong> {{ item.brand_color }}</li>
+                        {% endif %}
+                        <li><strong>Last Seen:</strong> {{ item.location_lost }}</li>
+                        <li><strong>Date Lost:</strong> {{ item.date_lost }}</li>
+                        <li><strong>Reported By:</strong> {{ item.reporter_name }} ({{ item.reporter_department }})</li>
+                    </ul>
+                    <p class="item-desc">{{ item.description }}</p>
+                </div>
+
+                <div class="item-footer">
+                    <span style="font-size:0.79rem; font-weight:600; color:var(--lavender-deep);">
+                        {{ item.match_count }} Smart Match{% if item.match_count != 1 %}es{% endif %}
+                    </span>
+                    <div style="display:flex; gap:0.45rem;">
+                        {% if item.match_count > 0 %}
+                            <a href="{{ url_for('matches_page', category=item.category) }}" class="btn btn-sm btn-outline-lavender">
+                                View Matches
+                            </a>
+                        {% endif %}
+                        {% if current_user %}
+                            <a href="{{ url_for('report_found_item') }}" class="btn btn-sm btn-navy">
+                                Found Similar?
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem 2rem;">
+        <h3 class="serif-display" style="font-size:1.75rem; margin-bottom:0.45rem;">No Lost Items Match Your Filter</h3>
+        <p style="color:var(--charcoal-muted); margin-bottom:1.25rem;">Try clearing your search criteria or file a new lost item report.</p>
+        <a href="{{ url_for('lost_items_gallery') }}" class="btn btn-outline-lavender">Show All Lost Items</a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,259 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 1260" width="2200" height="1260" style="background:#FAF9F6; font-family:'Segoe UI', -apple-system, Roboto, sans-serif;">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#20243A"/>
+    </marker>
+    <marker id="arrow-lav" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#6E58A8"/>
+    </marker>
+    <style>
+      .title { font-family: Georgia, 'Times New Roman', serif; font-size: 36px; fill: #20243A; }
+      .subtitle { font-size: 16px; fill: #535562; }
+      .tier-col { fill: #FFFFFF; stroke: #20243A; stroke-width: 2; rx: 14; filter: drop-shadow(0 10px 24px rgba(32,36,58,0.06)); }
+      .tier-hdr { fill: #20243A; rx: 14; }
+      .tier-title { font-size: 19px; font-weight: 700; fill: #FFFFFF; }
+      .tier-sub { font-size: 12px; fill: #D9CFF2; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+      .mod-card { fill: #FAF9F6; stroke: #D9CFF2; stroke-width: 1.5; rx: 10; }
+      .mod-card-priv { fill: #ECF6F1; stroke: #1B5E43; stroke-width: 1.5; rx: 10; }
+      .mod-title { font-size: 16px; font-weight: 700; fill: #20243A; font-family: Consolas, monospace; }
+      .mod-bullet { font-size: 13.5px; fill: #535562; }
+      .flow-line { fill: none; stroke: #20243A; stroke-width: 2.5; marker-end: url(#arrow); }
+      .flow-line-bi { fill: none; stroke: #6E58A8; stroke-width: 2.5; marker-start: url(#arrow-lav); marker-end: url(#arrow-lav); }
+      .flow-badge { fill: #EEE9F8; stroke: #A895D6; stroke-width: 1.2; rx: 6; }
+      .flow-txt { font-size: 12px; font-weight: 700; fill: #20243A; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <!-- Title Banner -->
+  <rect x="40" y="28" width="2120" height="92" rx="12" fill="#FFFFFF" stroke="#E7E4E9" stroke-width="1.5"/>
+  <text x="72" y="72" class="title">ReFind — Detailed 4-Tier System Architecture (Technical Reference)</text>
+  <text x="72" y="100" class="subtitle">Browser Client (HTML5 / CSS3 / Vanilla JS)  ↔  Flask &amp; Jinja2 Controller (app.py)  ↔  Domain Services  ↔  MySQL 8+ / 26.7 (refind_db on Port 3307)</text>
+
+  <!-- =====================================================================
+       TIER 1: CLIENT PRESENTATION LAYER (Browser)
+       ===================================================================== -->
+  <g transform="translate(45, 160)">
+    <rect x="0" y="0" width="430" height="920" class="tier-col"/>
+    <rect x="0" y="0" width="430" height="68" class="tier-hdr"/>
+    <text x="22" y="30" class="tier-sub">Tier 1 • Presentation Layer</text>
+    <text x="22" y="54" class="tier-title">Web Browser Client</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="0" width="390" height="230" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">Jinja2 HTML5 Templates (13 Views)</text>
+      <text x="18" y="58" class="mod-bullet">• base.html (Sticky nav, flash stack, footer)</text>
+      <text x="18" y="82" class="mod-bullet">• dashboard.html (Hero, SVG, stats, matches)</text>
+      <text x="18" y="106" class="mod-bullet">• lost_gallery.html &amp; found_gallery.html</text>
+      <text x="18" y="130" class="mod-bullet">• report_lost.html &amp; report_found.html</text>
+      <text x="18" y="154" class="mod-bullet">• matches.html (0–100 5-factor bars)</text>
+      <text x="18" y="178" class="mod-bullet">• claim_submit.html, my_claims.html</text>
+      <text x="18" y="202" class="mod-bullet">• admin_claims.html, activity.html, login/register</text>
+    </g>
+
+    <g transform="translate(20, 344)">
+      <rect x="0" y="0" width="390" height="240" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">static/css/style.css</text>
+      <text x="18" y="58" class="mod-bullet">• Editorial Minimalism Design System</text>
+      <text x="18" y="82" class="mod-bullet">• Warm Ivory (#FAF9F6) &amp; Deep Ink (#20243A)</text>
+      <text x="18" y="106" class="mod-bullet">• Restrained Lavender Accent (#A895D6)</text>
+      <text x="18" y="130" class="mod-bullet">• Instrument Serif + Plus Jakarta Sans</text>
+      <text x="18" y="154" class="mod-bullet">• Responsive Grid: 1440px down to 320px</text>
+      <text x="18" y="178" class="mod-bullet">• :user-valid / :user-invalid form states</text>
+      <text x="18" y="202" class="mod-bullet">• @media (prefers-reduced-motion: reduce)</text>
+    </g>
+
+    <g transform="translate(20, 606)">
+      <rect x="0" y="0" width="390" height="280" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">static/js/main.js</text>
+      <text x="18" y="58" class="mod-bullet">• Drag-and-drop image upload dropzone</text>
+      <text x="18" y="82" class="mod-bullet">• Live FileReader base64 thumbnail preview</text>
+      <text x="18" y="106" class="mod-bullet">• Client-side 5 MB &amp; MIME type check</text>
+      <text x="18" y="130" class="mod-bullet">• Submit button loading lock (anti-double-post)</text>
+      <text x="18" y="154" class="mod-bullet">• IntersectionObserver scroll reveal</text>
+      <text x="18" y="178" class="mod-bullet">• Accessible aria-invalid state sync</text>
+      <text x="18" y="202" class="mod-bullet">• Viva Demo Account quick-fill buttons</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TIER 2: APPLICATION CONTROLLER LAYER (Flask app.py)
+       ===================================================================== -->
+  <g transform="translate(585, 160)">
+    <rect x="0" y="0" width="450" height="920" class="tier-col"/>
+    <rect x="0" y="0" width="450" height="68" class="tier-hdr"/>
+    <text x="22" y="30" class="tier-sub">Tier 2 • Application Controller</text>
+    <text x="22" y="54" class="tier-title">Python Flask Server (app.py)</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="0" width="410" height="260" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">HTML Page Routes (Jinja2 SSR)</text>
+      <text x="18" y="58" class="mod-bullet">• GET  / , /dashboard (Dashboard &amp; Hero)</text>
+      <text x="18" y="82" class="mod-bullet">• GET/POST /login , /register , POST /logout</text>
+      <text x="18" y="106" class="mod-bullet">• GET  /lost-items , /found-items (Filterable)</text>
+      <text x="18" y="130" class="mod-bullet">• GET/POST /report/lost , /report/found</text>
+      <text x="18" y="154" class="mod-bullet">• GET  /matches , POST /matches/run</text>
+      <text x="18" y="178" class="mod-bullet">• GET/POST /claims/submit/&lt;found_id&gt;</text>
+      <text x="18" y="202" class="mod-bullet">• GET  /my-claims , /my-dashboard (Student)</text>
+      <text x="18" y="226" class="mod-bullet">• GET  /admin/claims , POST .../review , /activity</text>
+    </g>
+
+    <g transform="translate(20, 374)">
+      <rect x="0" y="0" width="410" height="250" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">REST JSON API Endpoints (/api/*)</text>
+      <text x="18" y="58" class="mod-bullet">• GET  /api/auth/csrf , GET /api/auth/me</text>
+      <text x="18" y="82" class="mod-bullet">• POST /api/auth/login , /register , /logout</text>
+      <text x="18" y="106" class="mod-bullet">• GET  /api/dashboard/stats</text>
+      <text x="18" y="130" class="mod-bullet">• GET/POST /api/lost-items &amp; /api/found-items</text>
+      <text x="18" y="154" class="mod-bullet">• GET  /api/matches , POST /api/matches/run</text>
+      <text x="18" y="178" class="mod-bullet">• POST /api/claims , GET /api/claims/mine</text>
+      <text x="18" y="202" class="mod-bullet">• GET  /api/admin/claims , POST .../review</text>
+      <text x="18" y="226" class="mod-bullet">• GET  /api/activity</text>
+    </g>
+
+    <g transform="translate(20, 646)">
+      <rect x="0" y="0" width="410" height="240" class="mod-card-priv"/>
+      <text x="18" y="30" class="mod-title">Request Pipeline &amp; Input Guards</text>
+      <text x="18" y="58" class="mod-bullet">• @app.before_request CSRF verification</text>
+      <text x="18" y="82" class="mod-bullet">• Session-backed current_user hydration</text>
+      <text x="18" y="106" class="mod-bullet">• @login_required &amp; @admin_required RBAC</text>
+      <text x="18" y="130" class="mod-bullet">• Strict category, date &amp; length validation</text>
+      <text x="18" y="154" class="mod-bullet">• 100% Parameterized SQL (%s placeholders)</text>
+      <text x="18" y="178" class="mod-bullet">• Config via python-dotenv (.env excluded)</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TIER 3: DOMAIN & SECURITY SERVICES LAYER (services/)
+       ===================================================================== -->
+  <g transform="translate(1145, 160)">
+    <rect x="0" y="0" width="450" height="920" class="tier-col"/>
+    <rect x="0" y="0" width="450" height="68" class="tier-hdr"/>
+    <text x="22" y="30" class="tier-sub">Tier 3 • Business Logic &amp; Services</text>
+    <text x="22" y="54" class="tier-title">Modular Service Layer (services/)</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="0" width="410" height="175" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">1. services/security.py</text>
+      <text x="18" y="58" class="mod-bullet">• Werkzeug scrypt:32768:8:1 password hashing</text>
+      <text x="18" y="82" class="mod-bullet">• Cryptographic 64-hex CSRF token generation</text>
+      <text x="18" y="106" class="mod-bullet">• Constant-time hmac.compare_digest verification</text>
+      <text x="18" y="130" class="mod-bullet">• Input sanitization &amp; ISO date validation</text>
+    </g>
+
+    <g transform="translate(20, 285)">
+      <rect x="0" y="0" width="410" height="175" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">2. services/upload_service.py</text>
+      <text x="18" y="58" class="mod-bullet">• Extension allowlist (.png, .jpg, .jpeg, .webp)</text>
+      <text x="18" y="82" class="mod-bullet">• Magic-byte binary file header inspection</text>
+      <text x="18" y="106" class="mod-bullet">• UUID-prefixed safe filename generation</text>
+      <text x="18" y="130" class="mod-bullet">• Stores files in static/uploads/ &amp; path in DB</text>
+    </g>
+
+    <g transform="translate(20, 478)">
+      <rect x="0" y="0" width="410" height="195" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">3. services/matching_engine.py</text>
+      <text x="18" y="58" class="mod-bullet">• Explainable 0–100 Rule-Based Scoring:</text>
+      <text x="18" y="82" class="mod-bullet">  1. Category Compatibility (0–30 pts)</text>
+      <text x="18" y="106" class="mod-bullet">  2. Item Name &amp; Brand Overlap (0–25 pts)</text>
+      <text x="18" y="130" class="mod-bullet">  3. Campus Zone Proximity (0–20 pts)</text>
+      <text x="18" y="154" class="mod-bullet">  4. Date Compatibility (0–15) + 5. Keywords (0–10)</text>
+      <text x="18" y="178" class="mod-bullet">• Saves pairs &gt;=35 pts; promotes &gt;=60 pts to MATCHED</text>
+    </g>
+
+    <g transform="translate(20, 691)">
+      <rect x="0" y="0" width="410" height="195" class="mod-card-priv"/>
+      <text x="18" y="30" class="mod-title">4. services/claim_service.py</text>
+      <text x="18" y="58" class="mod-bullet">• Explicit ACID Transaction (START TRANSACTION)</text>
+      <text x="18" y="82" class="mod-bullet">• Pessimistic Row Lock: SELECT ... FOR UPDATE</text>
+      <text x="18" y="106" class="mod-bullet">• Marks target claim APPROVED</text>
+      <text x="18" y="130" class="mod-bullet">• Auto-rejects competing PENDING claims</text>
+      <text x="18" y="154" class="mod-bullet">• Updates found_items-&gt;RETURNED, lost-&gt;RECOVERED</text>
+      <text x="18" y="178" class="mod-bullet">• Atomic COMMIT or automatic ROLLBACK on error</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       TIER 4: RELATIONAL DATABASE LAYER (MySQL 26.7 :3307)
+       ===================================================================== -->
+  <g transform="translate(1705, 160)">
+    <rect x="0" y="0" width="450" height="920" class="tier-col"/>
+    <rect x="0" y="0" width="450" height="68" class="tier-hdr"/>
+    <text x="22" y="30" class="tier-sub">Tier 4 • Persistence Layer</text>
+    <text x="22" y="54" class="tier-title">MySQL 26.7 (refind_db :3307)</text>
+
+    <g transform="translate(20, 92)">
+      <rect x="0" y="0" width="410" height="165" class="mod-card-priv"/>
+      <text x="18" y="30" class="mod-title">database/db.py (Least Privilege)</text>
+      <text x="18" y="58" class="mod-bullet">• Connects as refind_app@127.0.0.1</text>
+      <text x="18" y="82" class="mod-bullet">• Grants: SELECT, INSERT, UPDATE only</text>
+      <text x="18" y="106" class="mod-bullet">• Zero DROP, DELETE, or ALTER permissions</text>
+      <text x="18" y="130" class="mod-bullet">• Explicit db_transaction() context manager</text>
+    </g>
+
+    <g transform="translate(20, 280)">
+      <rect x="0" y="0" width="410" height="240" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">4 SQL Views (SQL SECURITY INVOKER)</text>
+      <text x="18" y="60" class="mod-bullet">• vw_public_lost_gallery</text>
+      <text x="18" y="82" class="mod-bullet">  (JOINs users; hides identifying_marks)</text>
+      <text x="18" y="110" class="mod-bullet">• vw_public_found_gallery</text>
+      <text x="18" y="132" class="mod-bullet">  (JOINs users; hides secret_detail)</text>
+      <text x="18" y="160" class="mod-bullet">• vw_detailed_matches (4 INNER JOINs, users ×2)</text>
+      <text x="18" y="188" class="mod-bullet">• vw_dashboard_stats (11 real-time KPIs)</text>
+    </g>
+
+    <g transform="translate(20, 542)">
+      <rect x="0" y="0" width="410" height="344" class="mod-card"/>
+      <text x="18" y="30" class="mod-title">6 Normalized InnoDB Tables (3NF)</text>
+      <text x="18" y="62" class="mod-bullet">1. users (PK: user_id, UQ: student_id, email)</text>
+      <text x="18" y="94" class="mod-bullet">2. lost_items (PK: lost_id, FK: user_id)</text>
+      <text x="18" y="126" class="mod-bullet">3. found_items (PK: found_id, FK: user_id)</text>
+      <text x="18" y="158" class="mod-bullet">4. matches (PK: match_id, UQ: lost_id+found_id)</text>
+      <text x="18" y="190" class="mod-bullet">5. claims (PK: claim_id, FKs: found, lost, user)</text>
+      <text x="18" y="216" class="mod-bullet">   + STORED GENERATED approved_found_id UQ</text>
+      <text x="18" y="248" class="mod-bullet">6. activity_logs (PK: log_id, FK: user_id)</text>
+      <text x="18" y="284" class="mod-bullet" style="fill:#1B5E43; font-weight:700;">• 9 FKs • 5 UQs • 8 CHECKs • 18 Indexes</text>
+    </g>
+  </g>
+
+  <!-- =====================================================================
+       INTER-TIER ARROWS & PROTOCOL LABELS
+       ===================================================================== -->
+  <!-- Tier 1 <-> Tier 2 -->
+  <path d="M 480 360 L 580 360" class="flow-line-bi"/>
+  <rect x="484" y="312" width="92" height="36" class="flow-badge"/>
+  <text x="530" y="328" class="flow-txt">HTTP / HTML</text>
+  <text x="530" y="342" class="flow-txt">+ CSRF</text>
+
+  <path d="M 480 680 L 580 680" class="flow-line-bi"/>
+  <rect x="484" y="632" width="92" height="36" class="flow-badge"/>
+  <text x="530" y="648" class="flow-txt">Multipart</text>
+  <text x="530" y="662" class="flow-txt">Images / JSON</text>
+
+  <!-- Tier 2 <-> Tier 3 -->
+  <path d="M 1040 360 L 1140 360" class="flow-line-bi"/>
+  <rect x="1044" y="312" width="92" height="36" class="flow-badge"/>
+  <text x="1090" y="328" class="flow-txt">Auth, Upload</text>
+  <text x="1090" y="342" class="flow-txt">&amp; Validation</text>
+
+  <path d="M 1040 720 L 1140 720" class="flow-line-bi"/>
+  <rect x="1044" y="672" width="92" height="36" class="flow-badge"/>
+  <text x="1090" y="688" class="flow-txt">Matcher &amp;</text>
+  <text x="1090" y="702" class="flow-txt">Claim Txn</text>
+
+  <!-- Tier 3 <-> Tier 4 -->
+  <path d="M 1600 400 L 1700 400" class="flow-line-bi"/>
+  <rect x="1604" y="352" width="92" height="36" class="flow-badge"/>
+  <text x="1650" y="368" class="flow-txt">Parameterized</text>
+  <text x="1650" y="382" class="flow-txt">SQL Queries</text>
+
+  <path d="M 1600 780 L 1700 780" class="flow-line-bi"/>
+  <rect x="1604" y="732" width="92" height="36" class="flow-badge"/>
+  <text x="1650" y="748" class="flow-txt">ACID Locks</text>
+  <text x="1650" y="762" class="flow-txt">FOR UPDATE</text>
+
+  <!-- Bottom Summary Strip -->
+  <rect x="45" y="1115" width="2110" height="105" rx="12" fill="#FFFFFF" stroke="#E7E4E9" stroke-width="1.5"/>
+  <text x="75" y="1152" style="font-size:16px; font-weight:700; fill:#20243A;">End-to-End Request Lifecycle Summary:</text>
+  <text x="75" y="1180" style="font-size:14px; fill:#535562;">1. Student submits Lost/Found form with CSRF token &amp; optional photo  →  2. upload_service.py verifies magic-bytes &amp; saves UUID file  →  3. Parameterized INSERT into refind_db</text>
+  <text x="75" y="1202" style="font-size:14px; fill:#535562;">4. matching_engine.py evaluates active pairs (0–100) &amp; updates matches  →  5. Admin reviews claim via claim_service.py (SELECT ... FOR UPDATE) &amp; commits atomic return.</text>
+</svg>

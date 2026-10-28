@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Campus Activity History — ReFind{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <span class="eyebrow">Relational Audit Log &bull; `activity_logs LEFT JOIN users`</span>
+        <h1 class="section-title">Campus Activity History &amp; Audit Trail</h1>
+        <p class="section-subtitle">
+            Append-only relational audit table recording item reporting, candidate matching, ownership claims, and verified returns.
+        </p>
+    </div>
+
+    <form action="{{ url_for('activity_page') }}" method="GET" style="display:flex; gap:0.5rem; align-items:center;">
+        <select name="action_type" class="form-control" style="width:auto;" aria-label="Filter by Action Type">
+            <option value="">All Action Types</option>
+            {% for act in [
+                'USER_REGISTERED',
+                'USER_LOGIN',
+                'LOST_REPORTED',
+                'FOUND_REPORTED',
+                'MATCH_GENERATED',
+                'CLAIM_SUBMITTED',
+                'CLAIM_APPROVED',
+                'CLAIM_REJECTED',
+                'ITEM_RETURNED'
+            ] %}
+                <option value="{{ act }}" {% if action_filter == act %}selected{% endif %}>{{ act }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        {% if action_filter %}
+            <a href="{{ url_for('activity_page') }}" class="btn btn-outline-lavender btn-sm">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="card" data-reveal>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Log ID</th>
+                    <th>Timestamp</th>
+                    <th>Action Type</th>
+                    <th>Entity</th>
+                    <th>Actor</th>
+                    <th>Event Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td><strong>#{{ log.log_id }}</strong></td>
+                        <td style="white-space:nowrap; color:var(--charcoal-muted);">{{ log.created_at }}</td>
+                        <td><span class="badge badge-matched">{{ log.action_type }}</span></td>
+                        <td><code>{{ log.entity_type }} #{{ log.entity_id }}</code></td>
+                        <td>
+                            {% if log.actor_name %}
+                                <strong>{{ log.actor_name }}</strong>
+                                <span class="role-chip {% if log.actor_role == 'ADMIN' %}admin{% endif %}" style="margin-left:0.25rem;">
+                                    {{ log.actor_role }}
+                                </span>
+                            {% else %}
+                                <span style="color:var(--charcoal-muted);">System</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.summary }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

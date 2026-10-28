@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% block title %}Smart Matching Engine — ReFind{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <span class="eyebrow">Step 02 &bull; Explainable Candidate Scoring</span>
+        <h1 class="section-title">Rule-Based Smart Matching Engine (0–100 Score)</h1>
+        <p class="section-subtitle">
+            Multi-table SQL JOIN view (<code>vw_detailed_matches</code>) pairing Lost &amp; Found reports across 5 weighted criteria.
+            <strong>Note:</strong> Algorithmic matches are candidate suggestions only and do not constitute proof of ownership.
+        </p>
+    </div>
+    {% if current_user %}
+        <form action="{{ url_for('trigger_matching_engine') }}" method="POST" data-loading-text="Re-evaluating all pairs...">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-primary">&#x21bb; Re-Run Matching Engine</button>
+        </form>
+    {% endif %}
+</div>
+
+<!-- Explainable 0-100 Scoring Rubric Card (Editorial Minimalist) -->
+<section class="rubric-editorial-card" aria-label="Match Scoring Rubric">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+        <div>
+            <h2 class="serif-display" style="font-size:1.65rem; color:var(--ink-navy);">
+                How Match Scores (0–100) Are Calculated
+            </h2>
+            <p style="font-size:0.88rem; color:var(--charcoal-muted); margin-top:0.25rem; max-width:74ch;">
+                Every active Lost &amp; Found pair is evaluated across 5 transparent factors. Pairs scoring &ge; {{ scoring_rubric.threshold_saved }} pts are persisted in <code>matches</code>; pairs &ge; {{ scoring_rubric.high_confidence_threshold }} pts promote item status to <code>MATCHED</code>.
+            </p>
+        </div>
+        <span class="badge badge-matched" style="font-size:0.78rem; padding:0.38rem 0.85rem;">Total Possible: 100 Points</span>
+    </div>
+
+    <div class="rubric-grid">
+        {% for c in scoring_rubric.criteria %}
+            <div class="rubric-item">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                    <span style="font-weight:700; font-size:0.84rem; color:var(--ink-navy);">{{ c.name }}</span>
+                    <span class="role-chip">{{ c.max_points }} pts</span>
+                </div>
+                <p style="font-size:0.78rem; color:var(--charcoal-muted); line-height:1.45;">{{ c.rule }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Filter Bar -->
+<form action="{{ url_for('matches_page') }}" method="GET" class="filter-bar" aria-label="Filter Candidate Matches">
+    <div class="filter-grid" style="grid-template-columns: 1fr 1fr 1fr auto;">
+        <div>
+            <label for="min_score" class="form-label">Minimum Match Score (0–100)</label>
+            <input type="number"
+                   id="min_score"
+                   name="min_score"
+                   class="form-control"
+                   min="0"
+                   max="100"
+                   step="5"
+                   placeholder="e.g., 60 for high-confidence"
+                   value="{{ filters.min_score }}">
+        </div>
+
+        <div>
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="category" class="form-control">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if filters.category == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="status" class="form-label">Match Status</label>
+            <select id="status" name="status" class="form-control">
+                <option value="">Active (Suggested &amp; Confirmed)</option>
+                {% for st in ['SUGGESTED', 'CONFIRMED', 'DISMISSED'] %}
+                    <option value="{{ st }}" {% if filters.status == st %}selected{% endif %}>{{ st }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="display:flex; gap:0.5rem;">
+            <button type="submit" class="btn btn-primary">Filter Matches</button>
+            <a href="{{ url_for('matches_page') }}" class="btn btn-outline-lavender">Reset</a>
+        </div>
+    </div>
+</form>
+
+<!-- Detailed Candidate Match Cards -->
+{% if matches %}
+    {% for m in matches %}
+        <article class="match-card" data-reveal>
+            <div class="match-header">
+                <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+                    <span class="badge badge-{{ m.match_status|lower }}">Match #{{ m.match_id }} &bull; {{ m.match_status }}</span>
+                    <span style="font-size:0.82rem; color:var(--charcoal-muted);">
+                        Evaluated on {{ m.matched_at }}
+                    </span>
+                </div>
+                <div class="score-pill {% if m.match_score >= 75 %}high{% elif m.match_score >= 55 %}medium{% endif %}">
+                    <span>Confidence Score: {{ "%.2f"|format(m.match_score) }} / 100</span>
+                </div>
+            </div>
+
+            <div class="match-pair-grid">
+                <!-- Left: Lost Item -->
+                <div class="match-side">
+                    {% if m.lost_image_path %}
+                        <img src="{{ url_for('static', filename=m.lost_image_path) }}" alt="{{ m.lost_item_name }}" class="match-thumb">
+                    {% endif %}
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                            <span class="badge badge-open">LOST ITEM #{{ m.lost_id }} ({{ m.lost_status }})</span>
+                            <span style="font-size:0.75rem; font-weight:600; color:var(--lavender-deep);">{{ m.lost_category }}</span>
+                        </div>
+                        <h3 class="serif-display" style="font-size:1.3rem; color:var(--ink-navy);">{{ m.lost_item_name }}</h3>
+                        <p style="font-size:0.8rem; color:var(--charcoal-muted); margin:0.25rem 0;">
+                            <strong>Brand/Color:</strong> {{ m.lost_brand_color or 'N/A' }} &bull;
+                            <strong>Location:</strong> {{ m.location_lost }} &bull;
+                            <strong>Date Lost:</strong> {{ m.date_lost }}
+                        </p>
+                        <p style="font-size:0.83rem; color:var(--ink-navy); margin-top:0.35rem;">{{ m.lost_description }}</p>
+                        <div style="font-size:0.76rem; color:var(--charcoal-muted); font-weight:600; margin-top:0.45rem;">
+                            Reported by {{ m.lost_reporter_name }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="match-connector">
+                    <span>PAIR</span>
+                    <span style="font-size:1.25rem;">&harr;</span>
+                </div>
+
+                <!-- Right: Found Item -->
+                <div class="match-side">
+                    {% if m.found_image_path %}
+                        <img src="{{ url_for('static', filename=m.found_image_path) }}" alt="{{ m.found_item_name }}" class="match-thumb">
+                    {% endif %}
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                            <span class="badge badge-available">FOUND ITEM #{{ m.found_id }} ({{ m.found_status }})</span>
+                            <span style="font-size:0.75rem; font-weight:600; color:var(--lavender-deep);">{{ m.found_category }}</span>
+                        </div>
+                        <h3 class="serif-display" style="font-size:1.3rem; color:var(--ink-navy);">{{ m.found_item_name }}</h3>
+                        <p style="font-size:0.8rem; color:var(--charcoal-muted); margin:0.25rem 0;">
+                            <strong>Brand/Color:</strong> {{ m.found_brand_color or 'N/A' }} &bull;
+                            <strong>Location:</strong> {{ m.location_found }} &bull;
+                            <strong>Date Found:</strong> {{ m.date_found }}
+                        </p>
+                        <p style="font-size:0.83rem; color:var(--ink-navy); margin-top:0.35rem;">{{ m.found_description }}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.55rem; flex-wrap:wrap; gap:0.5rem;">
+                            <span style="font-size:0.76rem; color:var(--charcoal-muted); font-weight:600;">
+                                Custody: {{ m.storage_location }}
+                            </span>
+                            {% if m.found_status != 'RETURNED' %}
+                                <a href="{{ url_for('submit_claim_route', found_id=m.found_id) }}" class="btn btn-sm btn-primary">
+                                    Submit Ownership Claim
+                                </a>
+                            {% else %}
+                                <span class="badge badge-returned">Verified &amp; Returned</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual 5-Criterion Score Breakdown -->
+            <div class="score-breakdown-box">
+                <div style="font-size:0.82rem; font-weight:600; color:var(--ink-navy);">
+                    Rule Explanation: <span style="font-weight:400; color:var(--charcoal-muted);">{{ m.score_explanation }}</span>
+                </div>
+                <div class="criteria-bars">
+                    <div class="criterion-item">
+                        <div class="criterion-top">
+                            <span>Category</span>
+                            <span>{{ "%.1f"|format(m.category_points) }} / 30</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ (m.category_points / 30 * 100)|round(1) }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="criterion-item">
+                        <div class="criterion-top">
+                            <span>Item &amp; Brand</span>
+                            <span>{{ "%.1f"|format(m.name_points) }} / 25</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ (m.name_points / 25 * 100)|round(1) }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="criterion-item">
+                        <div class="criterion-top">
+                            <span>Location</span>
+                            <span>{{ "%.1f"|format(m.location_points) }} / 20</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ (m.location_points / 20 * 100)|round(1) }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="criterion-item">
+                        <div class="criterion-top">
+                            <span>Date Compatibility</span>
+                            <span>{{ "%.1f"|format(m.date_points) }} / 15</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ (m.date_points / 15 * 100)|round(1) }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="criterion-item">
+                        <div class="criterion-top">
+                            <span>Description Keywords</span>
+                            <span>{{ "%.1f"|format(m.description_points) }} / 10</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width: {{ (m.description_points / 10 * 100)|round(1) }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem 2rem;">
+        <h3 class="serif-display" style="font-size:1.75rem; margin-bottom:0.45rem;">No Candidate Matches Found for Current Filter</h3>
+        <p style="color:var(--charcoal-muted); margin-bottom:1.25rem;">Try lowering the minimum score filter or re-running the matching engine.</p>
+        <a href="{{ url_for('matches_page') }}" class="btn btn-outline-lavender">Reset Match Filters</a>
+    </div>
+{% endif %}
+{% endblock %}

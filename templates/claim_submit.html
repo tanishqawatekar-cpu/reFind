@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Submit Ownership Claim — ReFind{% endblock %}
+
+{% block content %}
+<div class="editorial-split-layout">
+    <!-- Left Column: Editorial Context & Found Item Summary -->
+    <aside class="editorial-aside">
+        <span class="eyebrow">Step 03 &bull; Ownership Verification</span>
+        <h1 class="editorial-aside-title">
+            Submit Ownership Claim for Found Item #{{ item.found_id }}
+        </h1>
+        <p class="editorial-aside-copy">
+            To protect student belongings from false claims, every return is verified by a Campus Administrator. Provide specific proof answering the custody verification prompt below.
+        </p>
+
+        <!-- Found Item Summary Box -->
+        <div class="match-side" style="margin-bottom:1.25rem; background:var(--white);">
+            {% if item.image_path %}
+                <img src="{{ url_for('static', filename=item.image_path) }}" alt="{{ item.item_name }}" class="match-thumb" style="width:96px; height:96px;">
+            {% endif %}
+            <div>
+                <span class="badge badge-{{ item.status|lower }}" style="margin-bottom:0.35rem;">{{ item.status }}</span>
+                <h2 class="serif-display" style="font-size:1.35rem; color:var(--ink-navy);">{{ item.item_name }}</h2>
+                <p style="font-size:0.82rem; color:var(--charcoal-muted); margin-top:0.25rem;">
+                    <strong>Category:</strong> {{ item.category }} &bull;
+                    <strong>Found At:</strong> {{ item.location_found }} &bull;
+                    <strong>Date:</strong> {{ item.date_found }}
+                </p>
+                <p style="font-size:0.82rem; color:var(--ink-navy); margin-top:0.3rem;">
+                    <strong>Custody Desk:</strong> {{ item.storage_location }}
+                </p>
+            </div>
+        </div>
+
+        <ul class="editorial-checklist">
+            <li>Your proof is stored confidentially in <code>claims.proof_description</code>.</li>
+            <li>Link your open Lost Report so approving this claim automatically updates your report to <code>RECOVERED</code> inside an ACID transaction.</li>
+        </ul>
+    </aside>
+
+    <!-- Right Column: Claim Form -->
+    <div class="card" style="margin-bottom:0;">
+        <div class="card-navy-header">
+            <div>
+                <h2>Verification &amp; Claim Dossier</h2>
+                <span style="font-size:0.8rem;">
+                    Reviewed strictly by Campus Administrators
+                </span>
+            </div>
+            <a href="{{ url_for('found_items_gallery') }}" class="btn btn-sm btn-outline-lavender">Back to Found Gallery</a>
+        </div>
+
+        <!-- Verification Prompt -->
+        <div class="privacy-box" style="margin-bottom:1.4rem;">
+            <div style="font-size:0.76rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--lavender-deep); margin-bottom:0.3rem;">
+                Verification Question Set by Finder / Custody Desk
+            </div>
+            <div class="serif-display" style="font-size:1.3rem; color:var(--ink-navy);">
+                &ldquo;{{ item.verification_question }}&rdquo;
+            </div>
+        </div>
+
+        <form action="{{ url_for('submit_claim_route', found_id=item.found_id) }}"
+              method="POST"
+              data-loading-text="Submitting Ownership Claim...">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="proof_description" class="form-label">Your Ownership Proof &amp; Verification Answer *</label>
+                <textarea id="proof_description"
+                          name="proof_description"
+                          class="form-control"
+                          placeholder="Provide specific identifying details (engraving, serial suffix, sticker, contents, lock-screen description)..."
+                          minlength="5"
+                          required></textarea>
+                <span class="form-hint">
+                    Confidential: Stored in <code>claims.proof_description</code> and never displayed publicly.
+                </span>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="id_card_reference" class="form-label">College Roll / Staff ID Reference *</label>
+                    <input type="text"
+                           id="id_card_reference"
+                           name="id_card_reference"
+                           class="form-control"
+                           value="{{ current_user.student_id }}"
+                           required>
+                    <span class="form-hint">Bring this physical ID card when collecting the item at the desk.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="lost_id" class="form-label">Link Your Existing Lost Item Report (Optional)</label>
+                    <select id="lost_id" name="lost_id" class="form-control">
+                        <option value="">-- No linked lost report --</option>
+                        {% for l in my_lost_items %}
+                            <option value="{{ l.lost_id }}">
+                                Lost #{{ l.lost_id }}: {{ l.item_name }} ({{ l.date_lost }} &bull; {{ l.location_lost }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="form-hint">If linked, approving this claim automatically marks your Lost Report as <code>RECOVERED</code>.</span>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.85rem;">
+                <a href="{{ url_for('found_items_gallery') }}" class="btn btn-outline-lavender">Cancel</a>
+                <button type="submit" class="btn btn-primary">Submit Ownership Claim</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

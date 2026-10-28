@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Report Found Item — ReFind{% endblock %}
+
+{% block content %}
+<div class="editorial-split-layout">
+    <!-- Left Column: Editorial Heading, Context & Supportive SVG Illustration -->
+    <aside class="editorial-aside">
+        <span class="eyebrow">Step 01 &bull; Custody Intake Log</span>
+        <h1 class="editorial-aside-title">
+            Report a Found Campus Item
+        </h1>
+        <p class="editorial-aside-copy">
+            Thank you for helping a fellow student recover their belonging. Log where the item was discovered, specify where it is safely stored, and record a private verification detail that only the true owner would know.
+        </p>
+
+        <div class="editorial-illustration-card" aria-hidden="true">
+            <svg viewBox="0 0 320 120" style="width:100%; height:auto; display:block;" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="16" y="20" width="124" height="80" rx="10" fill="#FAF9F6" stroke="#20243A" stroke-width="1.4"/>
+                <path d="M46 60H110M78 36V84" stroke="#A895D6" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M150 60H184" stroke="#20243A" stroke-width="1.4" stroke-dasharray="3 3"/>
+                <rect x="196" y="20" width="108" height="80" rx="10" fill="#EEE9F8" stroke="#20243A" stroke-width="1.4"/>
+                <rect x="236" y="50" width="28" height="22" rx="4" fill="#FFFFFF" stroke="#20243A" stroke-width="1.4"/>
+                <path d="M242 50V43C242 39 245 36 250 36C255 36 258 39 258 43V50" stroke="#20243A" stroke-width="1.4"/>
+            </svg>
+        </div>
+
+        <ul class="editorial-checklist">
+            <li>Keep the <strong>Public Description</strong> general so anyone browsing cannot guess private details.</li>
+            <li>Set a clear <strong>Ownership Verification Question</strong> for claimants to answer.</li>
+            <li>Your <strong>Private Finder Secret Detail</strong> is excluded from <code>vw_public_found_gallery</code> and reviewed only by Administrators.</li>
+        </ul>
+    </aside>
+
+    <!-- Right Column: Functional Found Item Form -->
+    <div class="card" style="margin-bottom:0;">
+        <div class="card-navy-header">
+            <div>
+                <h2>Found Belonging Intake</h2>
+                <span style="font-size:0.8rem;">
+                    Automatically evaluates matches against open Lost Reports
+                </span>
+            </div>
+            <a href="{{ url_for('found_items_gallery') }}" class="btn btn-sm btn-outline-lavender">Back to Found Gallery</a>
+        </div>
+
+        <form action="{{ url_for('report_found_item') }}"
+              method="POST"
+              enctype="multipart/form-data"
+              data-loading-text="Saving &amp; Running Smart Matcher...">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="item_name" class="form-label">Found Item Name / Title *</label>
+                    <input type="text"
+                           id="item_name"
+                           name="item_name"
+                           class="form-control"
+                           placeholder="e.g., Casio fx-991CW Scientific Calculator"
+                           value="{{ form_data.item_name if form_data else '' }}"
+                           minlength="2"
+                           maxlength="120"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category" class="form-label">Category *</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="">-- Select Category --</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if form_data and form_data.category == cat %}selected{% endif %}>
+                                {{ cat }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="brand_color" class="form-label">Brand &amp; Color</label>
+                    <input type="text"
+                           id="brand_color"
+                           name="brand_color"
+                           class="form-control"
+                           placeholder="e.g., Matte Black"
+                           value="{{ form_data.brand_color if form_data else '' }}"
+                           maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="date_found" class="form-label">Date Found *</label>
+                    <input type="date"
+                           id="date_found"
+                           name="date_found"
+                           class="form-control"
+                           max="{{ today_iso }}"
+                           value="{{ form_data.date_found if form_data else today_iso }}"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location_found" class="form-label">Campus Location Where Found *</label>
+                    <input type="text"
+                           id="location_found"
+                           name="location_found"
+                           class="form-control"
+                           placeholder="e.g., Block B Computer Lab 2"
+                           value="{{ form_data.location_found if form_data else '' }}"
+                           minlength="2"
+                           maxlength="120"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="storage_location" class="form-label">Current Custody / Storage Location *</label>
+                    <input type="text"
+                           id="storage_location"
+                           name="storage_location"
+                           class="form-control"
+                           value="{{ form_data.storage_location if form_data else 'Campus Lost & Found Desk (Main Admin Block, Room 102)' }}"
+                           maxlength="150"
+                           required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description" class="form-label">Public Description (Do not reveal secret verification marks here) *</label>
+                    <textarea id="description"
+                              name="description"
+                              class="form-control"
+                              placeholder="General description of the found item without giving away private serial numbers or stickers..."
+                              minlength="5"
+                              required>{{ form_data.description if form_data else '' }}</textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="verification_question" class="form-label">Ownership Verification Question (Shown to Claimants) *</label>
+                    <input type="text"
+                           id="verification_question"
+                           name="verification_question"
+                           class="form-control"
+                           value="{{ form_data.verification_question if form_data else 'Describe any unique mark, sticker, engraving, contents, or serial detail to prove ownership.' }}"
+                           maxlength="255"
+                           required>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="privacy-box">
+                        <label for="secret_detail" class="form-label">
+                            Private Finder Verification Answer / Secret Detail (Hidden from Public Gallery)
+                        </label>
+                        <input type="text"
+                               id="secret_detail"
+                               name="secret_detail"
+                               class="form-control"
+                               placeholder="e.g., White sticker on back with roll number IT2024042, or sample transit card #0000 inside"
+                               value="{{ form_data.secret_detail if form_data else '' }}"
+                               maxlength="255">
+                        <span class="form-hint">
+                            Stored in <code>found_items.secret_detail</code> and excluded from <code>vw_public_found_gallery</code>. Used strictly by Campus Administrators when reviewing claims.
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Optional Validated Image Upload -->
+                <div class="form-group full-width">
+                    <label class="form-label">Optional Item Photograph (PNG, JPG, WEBP &bull; Max 5 MB)</label>
+                    <div class="upload-dropzone" data-upload-dropzone data-preview-target="#found-preview">
+                        <input type="file"
+                               id="image"
+                               name="image"
+                               accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                               style="display:none;">
+                        <div style="font-weight:600; color:var(--ink-navy); margin-bottom:0.25rem;">
+                            Click to Choose Image or Drag &amp; Drop Here
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--charcoal-muted);">
+                            Validated via magic-byte header inspection and stored with a unique UUID filename in <code>static/uploads/</code>.
+                        </div>
+                        <div id="found-preview" class="image-preview-container">
+                            <img src="" alt="Selected preview">
+                            <span data-preview-name style="font-size:0.8rem; font-weight:600; color:var(--ink-navy);"></span>
+                        </div>
+                    </div>
+                    <div data-upload-error style="color:var(--rose-ink); font-size:0.82rem; font-weight:600; margin-top:0.35rem;"></div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.85rem;">
+                <a href="{{ url_for('found_items_gallery') }}" class="btn btn-outline-lavender">Cancel</a>
+                <button type="submit" class="btn btn-primary">Submit Found Report &amp; Find Matches</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

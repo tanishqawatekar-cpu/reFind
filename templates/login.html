@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Sign In — ReFind Smart Campus Lost &amp; Found{% endblock %}
+
+{% block content %}
+<div class="editorial-split-layout" style="max-width:1020px; margin:1.5rem auto;">
+    <aside class="editorial-aside">
+        <span class="eyebrow">Authenticated Campus Portal</span>
+        <h1 class="editorial-aside-title">
+            Campus Sign In
+        </h1>
+        <p class="editorial-aside-copy">
+            Sign in with your university email or student roll number to report lost or found belongings, track ownership claims, or access the Campus Administrator verification desk.
+        </p>
+
+        <!-- Quick Demo Account Selector for DBMS Viva Demonstration -->
+        <div class="privacy-box">
+            <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.55rem; color:var(--ink-navy);">
+                Quick-Fill Demo Accounts (DBMS Viva Testing)
+            </div>
+            <p style="font-size:0.8rem; color:var(--charcoal-muted); margin-bottom:0.75rem;">
+                Click any sample role below to populate its demo identifier (enter the local seed password configured via <code>.env</code>):
+            </p>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button type="button"
+                        class="btn btn-sm btn-outline-lavender"
+                        data-fill-identifier="alex.rivera@campus.edu"
+                        data-fill-password=os.getenv("DEMO_STUDENT_PASSWORD", "ChangeMeStudent!01")>
+                    Student: Alex Rivera (CS2024018)
+                </button>
+                <button type="button"
+                        class="btn btn-sm btn-outline-lavender"
+                        data-fill-identifier="sam.carter@campus.edu"
+                        data-fill-password=os.getenv("DEMO_STUDENT_PASSWORD", "ChangeMeStudent!01")>
+                    Student: Sam Carter (IT2024042)
+                </button>
+                <button type="button"
+                        class="btn btn-sm btn-primary"
+                        data-fill-identifier="admin@campus.edu"
+                        data-fill-password=os.getenv("DEMO_ADMIN_PASSWORD", "ChangeMeAdmin!01")>
+                    Campus Admin (Dr. Jordan Blake)
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <div class="card" style="margin-bottom:0;">
+        <div class="card-navy-header">
+            <div>
+                <h2>Account Credentials</h2>
+                <span style="font-size:0.8rem;">
+                    Session-backed authentication with Werkzeug <code>scrypt</code> verification
+                </span>
+            </div>
+        </div>
+
+        <form action="{{ url_for('login_page') }}" method="POST" data-loading-text="Signing in...">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label for="identifier" class="form-label">Campus Email or Student/Staff ID</label>
+                <input type="text"
+                       id="identifier"
+                       name="identifier"
+                       class="form-control"
+                       placeholder="e.g., alex.rivera@campus.edu or CS2024018"
+                       autocomplete="username"
+                       autocapitalize="none"
+                       autocorrect="off"
+                       spellcheck="false"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password"
+                       id="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="Enter your password"
+                       autocomplete="current-password"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">
+                Sign In to ReFind
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.35rem; font-size:0.86rem; color:var(--charcoal-muted);">
+            New student on campus?
+            <a href="{{ url_for('register_page') }}" class="editorial-link" style="margin-left:0.25rem;">Create a Student Account</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

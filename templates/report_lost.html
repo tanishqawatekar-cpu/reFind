@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Report Lost Item — ReFind{% endblock %}
+
+{% block content %}
+<div class="editorial-split-layout">
+    <!-- Left Column: Editorial Heading, Context & Supportive SVG Illustration -->
+    <aside class="editorial-aside">
+        <span class="eyebrow">Step 01 &bull; Missing Belonging Registry</span>
+        <h1 class="editorial-aside-title">
+            Report a Lost Campus Item
+        </h1>
+        <p class="editorial-aside-copy">
+            Share clear details about when and where you last saw your belonging. As soon as you submit, ReFind evaluates your report against every available custody item using our 0–100 rule-based matching engine.
+        </p>
+
+        <div class="editorial-illustration-card" aria-hidden="true">
+            <svg viewBox="0 0 320 120" style="width:100%; height:auto; display:block;" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="14" y="18" width="84" height="84" rx="10" fill="#FAF9F6" stroke="#20243A" stroke-width="1.4"/>
+                <circle cx="56" cy="54" r="18" stroke="#A895D6" stroke-width="1.6"/>
+                <path d="M69 67L80 78" stroke="#20243A" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M116 60H194" stroke="#A895D6" stroke-width="1.4" stroke-dasharray="4 4"/>
+                <rect x="210" y="18" width="96" height="84" rx="10" fill="#EEE9F8" stroke="#20243A" stroke-width="1.4"/>
+                <path d="M244 60L254 70L274 48" stroke="#20243A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+
+        <ul class="editorial-checklist">
+            <li>Include exact building or room names for up to <strong>20 location points</strong>.</li>
+            <li>Record private engravings, serial suffixes, or stickers in the <strong>Confidential Identifying Marks</strong> box.</li>
+            <li>Private marks are excluded from <code>vw_public_lost_gallery</code> and visible only to Campus Administrators.</li>
+        </ul>
+    </aside>
+
+    <!-- Right Column: Functional Report Form -->
+    <div class="card" style="margin-bottom:0;">
+        <div class="card-navy-header">
+            <div>
+                <h2>Lost Item Details</h2>
+                <span style="font-size:0.8rem;">
+                    Triggers automatic 0–100 candidate evaluation upon submission
+                </span>
+            </div>
+            <a href="{{ url_for('lost_items_gallery') }}" class="btn btn-sm btn-outline-lavender">Back to Lost Gallery</a>
+        </div>
+
+        <form action="{{ url_for('report_lost_item') }}"
+              method="POST"
+              enctype="multipart/form-data"
+              data-loading-text="Saving &amp; Running Smart Matcher...">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="item_name" class="form-label">Item Name / Title *</label>
+                    <input type="text"
+                           id="item_name"
+                           name="item_name"
+                           class="form-control"
+                           placeholder="e.g., Apple AirPods Pro (2nd Gen)"
+                           value="{{ form_data.item_name if form_data else '' }}"
+                           minlength="2"
+                           maxlength="120"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category" class="form-label">Category *</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="">-- Select Category --</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if form_data and form_data.category == cat %}selected{% endif %}>
+                                {{ cat }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="brand_color" class="form-label">Brand &amp; Color</label>
+                    <input type="text"
+                           id="brand_color"
+                           name="brand_color"
+                           class="form-control"
+                           placeholder="e.g., White with Lavender Silicone Case"
+                           value="{{ form_data.brand_color if form_data else '' }}"
+                           maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="date_lost" class="form-label">Date Lost *</label>
+                    <input type="date"
+                           id="date_lost"
+                           name="date_lost"
+                           class="form-control"
+                           max="{{ today_iso }}"
+                           value="{{ form_data.date_lost if form_data else today_iso }}"
+                           required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="location_lost" class="form-label">Last Seen Campus Location *</label>
+                    <input type="text"
+                           id="location_lost"
+                           name="location_lost"
+                           class="form-control"
+                           placeholder="e.g., Central Library Reading Room (2nd Floor) or Block B Computer Lab 2"
+                           value="{{ form_data.location_lost if form_data else '' }}"
+                           minlength="2"
+                           maxlength="120"
+                           required>
+                    <span class="form-hint">Include building/block name and room/floor for higher location match accuracy (up to 20 pts).</span>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description" class="form-label">Public Description *</label>
+                    <textarea id="description"
+                              name="description"
+                              class="form-control"
+                              placeholder="Describe general appearance, model, case, or circumstances when lost..."
+                              minlength="5"
+                              required>{{ form_data.description if form_data else '' }}</textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <div class="privacy-box">
+                        <label for="identifying_marks" class="form-label">
+                            Private Ownership Identifying Marks (Hidden from Public Gallery)
+                        </label>
+                        <input type="text"
+                               id="identifying_marks"
+                               name="identifying_marks"
+                               class="form-control"
+                               placeholder="e.g., Engraved initials 'DEMO-TAG-01', serial suffix, sticker on back cover, or lock-screen wallpaper"
+                               value="{{ form_data.identifying_marks if form_data else '' }}"
+                               maxlength="255">
+                        <span class="form-hint">
+                            Stored in <code>lost_items.identifying_marks</code> and <strong>never</strong> exposed in <code>vw_public_lost_gallery</code>. Strictly used by Campus Administrators when verifying ownership claims.
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Optional Validated Image Upload -->
+                <div class="form-group full-width">
+                    <label class="form-label">Optional Item Photograph (PNG, JPG, WEBP &bull; Max 5 MB)</label>
+                    <div class="upload-dropzone" data-upload-dropzone data-preview-target="#lost-preview">
+                        <input type="file"
+                               id="image"
+                               name="image"
+                               accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                               style="display:none;">
+                        <div style="font-weight:600; color:var(--ink-navy); margin-bottom:0.25rem;">
+                            Click to Choose Image or Drag &amp; Drop Here
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--charcoal-muted);">
+                            Validated via magic-byte header inspection and stored with a unique UUID filename in <code>static/uploads/</code>.
+                        </div>
+                        <div id="lost-preview" class="image-preview-container">
+                            <img src="" alt="Selected preview">
+                            <span data-preview-name style="font-size:0.8rem; font-weight:600; color:var(--ink-navy);"></span>
+                        </div>
+                    </div>
+                    <div data-upload-error style="color:var(--rose-ink); font-size:0.82rem; font-weight:600; margin-top:0.35rem;"></div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.85rem;">
+                <a href="{{ url_for('lost_items_gallery') }}" class="btn btn-outline-lavender">Cancel</a>
+                <button type="submit" class="btn btn-primary">Submit Lost Report &amp; Find Matches</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

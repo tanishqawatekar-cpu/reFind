@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+{% block title %}ReFind — Smart Campus Lost &amp; Found{% endblock %}
+
+{% block content %}
+<!-- 1. Editorial Hero Section -->
+<section class="editorial-hero" aria-label="ReFind — Smart Campus Lost &amp; Found Hero">
+    <div class="hero-copy">
+        <span class="eyebrow">ReFind — Smart Campus Lost &amp; Found</span>
+        <h1 class="hero-headline">
+            Lost something?
+            <span class="line-italic"><span class="lavender-underline">Let&rsquo;s find it.</span></span>
+        </h1>
+        <p class="hero-lead">
+            &ldquo;Because every little thing deserves its way back home.&rdquo;
+        </p>
+        <p class="hero-description">
+            Report misplaced or discovered belongings across campus, explore explainable 0–100 candidate pairings, and verify rightful ownership through administrator-reviewed claims.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{{ url_for('report_lost_item') }}" class="btn btn-lg btn-primary">
+                I Lost Something
+            </a>
+            <a href="{{ url_for('report_found_item') }}" class="btn btn-lg btn-outline-lavender">
+                I Found Something
+            </a>
+            {% if current_user and current_user.role == 'ADMIN' %}
+                <a href="{{ url_for('admin_claims_page') }}" class="btn btn-lg btn-lavender-soft">
+                    Review Claims ({{ stats.pending_claims }})
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="hero-trust-strip">
+            <div class="hero-trust-item">
+                <strong>{{ stats.total_found }}</strong> Items Logged at Desk
+            </div>
+            <div class="hero-trust-item">
+                <strong>{{ stats.active_matches }}</strong> Active Smart Pairings
+            </div>
+            <div class="hero-trust-item">
+                <strong>{{ stats.recovery_rate }}%</strong> Campus Recovery Rate
+            </div>
+        </div>
+    </div>
+
+    <!-- Art-Directed SVG Composition of Everyday Campus Objects -->
+    <div class="hero-composition" aria-hidden="true">
+        <div class="composition-top-bar">
+            <span>Archive No. RF—2026</span>
+            <span>Campus Custody Registry</span>
+        </div>
+
+        <div class="composition-stage">
+            <svg class="composition-svg" viewBox="0 0 420 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Subtle Lavender Editorial Backdrop Halo -->
+                <circle cx="215" cy="140" r="108" fill="#EEE9F8" opacity="0.72"/>
+                <circle cx="215" cy="140" r="108" stroke="#D9CFF2" stroke-width="1" stroke-dasharray="4 4"/>
+
+                <!-- 1. Spiral Field Notebook (Center-Left) -->
+                <g class="float-slow">
+                    <rect x="64" y="54" width="114" height="148" rx="8" fill="#FFFFFF" stroke="#20243A" stroke-width="1.6"/>
+                    <rect x="74" y="66" width="94" height="32" rx="4" fill="#EEE9F8" stroke="#A895D6" stroke-width="1.1"/>
+                    <line x1="82" y1="79" x2="146" y2="79" stroke="#20243A" stroke-width="1.4" stroke-linecap="round"/>
+                    <line x1="82" y1="88" x2="122" y2="88" stroke="#535562" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="80" y1="118" x2="156" y2="118" stroke="#E7E4E9" stroke-width="1.4" stroke-linecap="round"/>
+                    <line x1="80" y1="134" x2="156" y2="134" stroke="#E7E4E9" stroke-width="1.4" stroke-linecap="round"/>
+                    <line x1="80" y1="150" x2="138" y2="150" stroke="#E7E4E9" stroke-width="1.4" stroke-linecap="round"/>
+                    <!-- Spiral Rings -->
+                    <path d="M58 70H68M58 92H68M58 114H68M58 136H68M58 158H68M58 180H68" stroke="#20243A" stroke-width="1.8" stroke-linecap="round"/>
+                </g>
+
+                <!-- 2. Fountain Pen (Diagonal Accent) -->
+                <g class="float-medium">
+                    <path d="M162 214L228 74L239 79L173 219L161 229L162 214Z" fill="#20243A"/>
+                    <path d="M228 74L239 79L243 70C244 67 242 64 239 63C236 62 233 63 232 66L228 74Z" fill="#A895D6"/>
+                    <line x1="229" y1="84" x2="213" y2="118" stroke="#EEE9F8" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- 3. Insulated Water Bottle (Right) -->
+                <g class="float-reverse">
+                    <rect x="268" y="64" width="66" height="156" rx="18" fill="#FAF9F6" stroke="#20243A" stroke-width="1.6"/>
+                    <rect x="282" y="42" width="38" height="22" rx="5" fill="#20243A"/>
+                    <path d="M286 42V34C286 30 290 27 295 27H307C312 27 316 30 316 34V42" stroke="#20243A" stroke-width="1.8"/>
+                    <rect x="268" y="106" width="66" height="44" fill="#EEE9F8" stroke="#20243A" stroke-width="1.3"/>
+                    <circle cx="301" cy="128" r="9" stroke="#6E58A8" stroke-width="1.4"/>
+                </g>
+
+                <!-- 4. Wireless Earbuds Case (Bottom-Center) -->
+                <g class="float-medium">
+                    <rect x="176" y="168" width="76" height="62" rx="22" fill="#FFFFFF" stroke="#20243A" stroke-width="1.6"/>
+                    <line x1="176" y1="194" x2="252" y2="194" stroke="#20243A" stroke-width="1.2"/>
+                    <rect x="204" y="189" width="20" height="10" rx="5" fill="#EEE9F8" stroke="#20243A" stroke-width="1.1"/>
+                    <circle cx="214" cy="209" r="3" fill="#A895D6"/>
+                </g>
+
+                <!-- 5. Brass Key Ring (Top-Center Right) -->
+                <g class="float-slow">
+                    <circle cx="222" cy="54" r="16" stroke="#20243A" stroke-width="1.6" fill="#FFFFFF"/>
+                    <circle cx="222" cy="54" r="10" stroke="#A895D6" stroke-width="1.2"/>
+                    <path d="M234 65L255 86M250 81L256 75M254 85L260 79" stroke="#20243A" stroke-width="1.8" stroke-linecap="round"/>
+                </g>
+            </svg>
+        </div>
+
+        <div class="composition-caption">
+            <span>Notebook &bull; Earbuds &bull; Keys &bull; Bottle</span>
+            <span>0–100 Rule-Based Matching</span>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Featured Found Items on Campus (Real MySQL Data) -->
+<section class="editorial-block" data-reveal aria-label="Recently Found Campus Items">
+    <div class="editorial-block-header">
+        <div>
+            <span class="eyebrow">Custody Desk Highlights</span>
+            <h2 class="editorial-block-title">Recently Found <span class="serif-italic">on Campus</span></h2>
+        </div>
+        <a href="{{ url_for('found_items_gallery') }}" class="editorial-link">
+            Explore Full Found Catalog &rarr;
+        </a>
+    </div>
+
+    {% if top_matches %}
+        {% set seen_found = namespace(ids=[]) %}
+        <div class="gallery-grid">
+            {% for m in top_matches %}
+                {% if m.found_id not in seen_found.ids and seen_found.ids|length < 3 %}
+                    {% set _ = seen_found.ids.append(m.found_id) %}
+                    <article class="item-card">
+                        <div class="item-image-wrap">
+                            {% if m.found_image_path %}
+                                <img src="{{ url_for('static', filename=m.found_image_path) }}" alt="{{ m.found_item_name }}" loading="lazy">
+                            {% else %}
+                                <div class="item-placeholder">Custody Photograph Unavailable</div>
+                            {% endif %}
+                            <div class="item-top-badges">
+                                <span class="badge badge-category">{{ m.found_category }}</span>
+                                <span class="badge badge-{{ m.found_status|lower }}">{{ m.found_status }}</span>
+                            </div>
+                        </div>
+
+                        <div class="item-body">
+                            <h3 class="item-title">{{ m.found_item_name }}</h3>
+                            <ul class="item-meta-list">
+                                <li><strong>Found At:</strong> {{ m.location_found }}</li>
+                                <li><strong>Date Logged:</strong> {{ m.date_found }}</li>
+                            </ul>
+                        </div>
+
+                        <div class="item-footer">
+                            <span style="font-size:0.78rem; color:var(--charcoal-muted);">
+                                Found Record #{{ m.found_id }}
+                            </span>
+                            {% if m.found_status != 'RETURNED' %}
+                                <a href="{{ url_for('submit_claim_route', found_id=m.found_id) }}" class="btn btn-sm btn-primary">
+                                    Claim Item
+                                </a>
+                            {% else %}
+                                <span class="badge badge-returned">Returned to Owner</span>
+                            {% endif %}
+                        </div>
+                    </article>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <p style="color:var(--charcoal-muted);">No found items currently highlighted. Visit the <a href="{{ url_for('found_items_gallery') }}" class="editorial-link">Found Items Gallery</a>.</p>
+        </div>
+    {% endif %}
+</section>
+
+<!-- 3. How It Works — 3-Step Editorial Section -->
+<section id="how-it-works" class="editorial-block" data-reveal aria-label="How ReFind Works">
+    <div class="editorial-block-header">
+        <div>
+            <span class="eyebrow">Thoughtful Recovery Workflow</span>
+            <h2 class="editorial-block-title">How <span class="serif-italic">ReFind</span> Works</h2>
+        </div>
+        <span style="font-size:0.86rem; color:var(--charcoal-muted);">
+            Three quiet steps from loss to verified return
+        </span>
+    </div>
+
+    <div class="steps-editorial-grid">
+        <div class="step-card">
+            <div class="step-top">
+                <span class="step-number">01</span>
+                <span class="step-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+                    </svg>
+                </span>
+            </div>
+            <div>
+                <h3 class="step-title">Report It</h3>
+                <p class="step-desc">
+                    File a lost or found report in under a minute with location details, optional photography, and private verification marks hidden from public view.
+                </p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-top">
+                <span class="step-number">02</span>
+                <span class="step-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/>
+                    </svg>
+                </span>
+            </div>
+            <div>
+                <h3 class="step-title">Find a Match</h3>
+                <p class="step-desc">
+                    Our explainable rule-based matching engine scores candidate pairs from 0–100 across category, item/brand, campus zone, date proximity, and keywords.
+                </p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-top">
+                <span class="step-number">03</span>
+                <span class="step-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+            </div>
+            <div>
+                <h3 class="step-title">Get Reunited</h3>
+                <p class="step-desc">
+                    Submit confidential proof of ownership. A Campus Administrator verifies your secret detail and completes an ACID transactional return at the custody desk.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Real-Time Impact Section (Backed by SQL View `vw_dashboard_stats`) -->
+<section class="editorial-block" data-reveal aria-label="Real-time Database Statistics">
+    <div class="editorial-block-header">
+        <div>
+            <span class="eyebrow">Live Relational Telemetry (`vw_dashboard_stats`)</span>
+            <h2 class="editorial-block-title">Campus Recovery <span class="serif-italic">Impact</span></h2>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-label">Total Lost Reports</span>
+            <span class="stat-value">{{ stats.total_lost }}</span>
+            <span class="stat-meta">{{ stats.open_lost }} Open &bull; {{ stats.recovered_lost }} Recovered</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Total Found Items</span>
+            <span class="stat-value">{{ stats.total_found }}</span>
+            <span class="stat-meta">{{ stats.available_found }} Available &bull; {{ stats.returned_found }} Returned</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Smart Matches</span>
+            <span class="stat-value">{{ stats.active_matches }}</span>
+            <span class="stat-meta">{{ stats.high_confidence_matches }} High-Confidence (&ge; 70 pts)</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Ownership Claims</span>
+            <span class="stat-value">{{ stats.pending_claims }}</span>
+            <span class="stat-meta">Pending Review &bull; {{ stats.approved_claims }} Approved</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Campus Recovery Rate</span>
+            <span class="stat-value">{{ stats.recovery_rate }}%</span>
+            <span class="stat-meta">{{ stats.registered_students }} Registered Students</span>
+        </div>
+    </div>
+
+    <!-- Main Two-Column Dashboard Content -->
+    <div class="two-col-grid">
+        <!-- Left Column: Top Rule-Based Matches (`vw_detailed_matches`) -->
+        <div>
+            <div class="card">
+                <div class="card-navy-header">
+                    <div>
+                        <h2>Top Rule-Based Candidate Matches</h2>
+                        <span style="font-size:0.78rem;">
+                            Multi-table SQL JOIN (<code>vw_detailed_matches</code>) scored 0–100
+                        </span>
+                    </div>
+                    <a href="{{ url_for('matches_page') }}" class="btn btn-sm btn-outline-lavender">View All Matches</a>
+                </div>
+
+                {% if top_matches %}
+                    {% for m in top_matches %}
+                        <div class="match-card" style="padding:1.15rem; margin-bottom:0.95rem;">
+                            <div class="match-header" style="padding-bottom:0.65rem; margin-bottom:0.85rem;">
+                                <div>
+                                    <span class="badge badge-{{ m.match_status|lower }}">{{ m.match_status }}</span>
+                                    <span style="font-size:0.82rem; color:var(--charcoal-muted); margin-left:0.4rem;">
+                                        Category: <strong style="color:var(--ink-navy);">{{ m.lost_category }}</strong>
+                                    </span>
+                                </div>
+                                <span class="score-pill {% if m.match_score >= 75 %}high{% elif m.match_score >= 55 %}medium{% endif %}" style="font-size:0.8rem; padding:0.28rem 0.75rem;">
+                                    Match Score: {{ "%.1f"|format(m.match_score) }} / 100
+                                </span>
+                            </div>
+
+                            <div class="match-pair-grid">
+                                <div class="match-side">
+                                    {% if m.lost_image_path %}
+                                        <img src="{{ url_for('static', filename=m.lost_image_path) }}" alt="{{ m.lost_item_name }}" class="match-thumb">
+                                    {% endif %}
+                                    <div>
+                                        <span class="badge badge-open" style="margin-bottom:0.25rem;">LOST #{{ m.lost_id }}</span>
+                                        <div style="font-weight:700; color:var(--ink-navy); font-size:0.94rem;">{{ m.lost_item_name }}</div>
+                                        <div style="font-size:0.78rem; color:var(--charcoal-muted);">
+                                            {{ m.location_lost }} &bull; {{ m.date_lost }}
+                                        </div>
+                                        <div style="font-size:0.76rem; color:var(--lavender-deep); font-weight:600;">
+                                            Reported by {{ m.lost_reporter_name }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="match-connector">&harr;</div>
+
+                                <div class="match-side">
+                                    {% if m.found_image_path %}
+                                        <img src="{{ url_for('static', filename=m.found_image_path) }}" alt="{{ m.found_item_name }}" class="match-thumb">
+                                    {% endif %}
+                                    <div>
+                                        <span class="badge badge-available" style="margin-bottom:0.25rem;">FOUND #{{ m.found_id }}</span>
+                                        <div style="font-weight:700; color:var(--ink-navy); font-size:0.94rem;">{{ m.found_item_name }}</div>
+                                        <div style="font-size:0.78rem; color:var(--charcoal-muted);">
+                                            {{ m.location_found }} &bull; {{ m.date_found }}
+                                        </div>
+                                        <div style="margin-top:0.4rem;">
+                                            {% if m.found_status != 'RETURNED' %}
+                                                <a href="{{ url_for('submit_claim_route', found_id=m.found_id) }}" class="btn btn-sm btn-primary">
+                                                    Claim Item
+                                                </a>
+                                            {% else %}
+                                                <span class="badge badge-returned">Returned to Owner</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top:0.7rem; font-size:0.78rem; color:var(--charcoal-muted); background:var(--bg-ivory); padding:0.5rem 0.75rem; border-radius:4px; border:1px solid var(--border-hairline);">
+                                <strong style="color:var(--ink-navy);">Score Breakdown:</strong> {{ m.score_explanation }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color:var(--charcoal-muted);">No active matches found yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Category Aggregation + Recent Campus Activity -->
+        <div>
+            <!-- Category Breakdown Card (`GROUP BY category`) -->
+            <div class="card">
+                <div class="card-navy-header">
+                    <div>
+                        <h2>Category Distribution</h2>
+                        <span style="font-size:0.76rem;">SQL GROUP BY Aggregation</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Lost</th>
+                                <th>Found</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in category_breakdown %}
+                                <tr>
+                                    <td><strong>{{ row.category }}</strong></td>
+                                    <td><span class="badge badge-open">{{ row.lost_count }}</span></td>
+                                    <td><span class="badge badge-available">{{ row.found_count }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Activity Feed (`activity_logs LEFT JOIN users`) -->
+            <div class="card">
+                <div class="card-navy-header">
+                    <div>
+                        <h2>Recent Campus Activity</h2>
+                        <span style="font-size:0.76rem;">Live Audit Trail</span>
+                    </div>
+                    <a href="{{ url_for('activity_page') }}" class="btn btn-sm btn-outline-lavender">Full Log</a>
+                </div>
+                <div class="timeline">
+                    {% for act in recent_activity %}
+                        <div class="timeline-item">
+                            <div>
+                                <span class="badge badge-matched" style="margin-bottom:0.25rem;">{{ act.action_type }}</span>
+                                <div style="font-size:0.84rem; color:var(--ink-navy); font-weight:500;">{{ act.summary }}</div>
+                            </div>
+                            <span class="timeline-time">{{ act.created_at }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
